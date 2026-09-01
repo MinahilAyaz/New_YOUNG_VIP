@@ -34,3 +34,18 @@ jobs:
 
       - name: Build iOS Application (No Codesign)
         run: flutter build ios --release --no-codesign
+
+      - name: Package IPA
+        run: |
+          mkdir -p build/ios/ipa/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/ipa/Payload/
+          cd build/ios/ipa
+          zip -r young_vip.ipa Payload
+          cd ../../..
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: young_vip_ios_ipa
+          path: build/ios/ipa/young_vip.ipa
+          if-no-files-found: error
