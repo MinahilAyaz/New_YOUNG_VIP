@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
-import '../core/theme/app_text_styles.dart';
 import '../data/models/premium_lab_model.dart';
 import '../viewmodels/premium_lab_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/custom_drawer.dart';
 
 class PremiumLabView extends StatelessWidget {
-  const PremiumLabView({super.key});
+  final bool isRootTab;
+
+  const PremiumLabView({
+    super.key,
+    this.isRootTab = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,6 @@ class PremiumLabView extends StatelessWidget {
       create: (_) => PremiumLabViewModel(),
       child: Scaffold(
         backgroundColor: AppColors.warmIvory,
-        drawer: const CustomDrawer(),
         body: Consumer<PremiumLabViewModel>(
           builder: (context, viewModel, _) {
             final double screenWidth = MediaQuery.of(context).size.width;
@@ -34,7 +35,7 @@ class PremiumLabView extends StatelessWidget {
                   child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(
                       horizontal: horizontalPadding,
-                      vertical: 20.0,
+                      vertical: 12.0,
                     ),
                     child: SizedBox(
                       width: double.infinity,
@@ -42,11 +43,13 @@ class PremiumLabView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildTopBar(context),
-                          const SizedBox(height: 28.0),
+                          const SizedBox(height: 18.0),
                           _buildHeading(premiumData.screenTitle),
-                          const SizedBox(height: 52.0),
-                          _buildPaywallContent(premiumData),
                           const SizedBox(height: 24.0),
+                          _buildPaywallHero(premiumData),
+                          const SizedBox(height: 20.0),
+                          _buildPricingCards(),
+                          const SizedBox(height: 16.0),
                         ],
                       ),
                     ),
@@ -56,9 +59,11 @@ class PremiumLabView extends StatelessWidget {
             );
           },
         ),
-        bottomNavigationBar: const CustomBottomNavBar(
-          currentIndex: 1,
-        ),
+        bottomNavigationBar: isRootTab
+            ? null
+            : const CustomBottomNavBar(
+                currentIndex: 1,
+              ),
       ),
     );
   }
@@ -66,152 +71,327 @@ class PremiumLabView extends StatelessWidget {
   Widget _buildTopBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () => Scaffold.of(ctx).openDrawer(),
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              width: 36.0,
-              height: 36.0,
-              alignment: Alignment.centerLeft,
-              child: const Icon(
-                Icons.menu_rounded,
-                color: AppColors.deepInk,
-                size: 26.0,
-              ),
-            ),
-          ),
-        ),
-        RichText(
-          text: const TextSpan(
+        GestureDetector(
+          onTap: () => Navigator.maybePop(context),
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextSpan(
-                text: 'YOUNG ',
-                style: TextStyle(
+              Container(
+                width: 34.0,
+                height: 34.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color: const Color(0xFFEDE7F2),
+                    width: 1.0,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.arrow_back_rounded,
                   color: AppColors.deepInk,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
+                  size: 18.0,
                 ),
               ),
-              TextSpan(
-                text: 'VIP',
-                style: TextStyle(
-                  color: AppColors.youngVipGold,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
+              const SizedBox(width: 10.0),
+              RichText(
+                text: const TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'YOUNG ',
+                      style: TextStyle(
+                        color: AppColors.deepInk,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'VIP',
+                      style: TextStyle(
+                        color: AppColors.mutedPurple,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-        Container(
-          width: 36.0,
-          height: 36.0,
-          decoration: const BoxDecoration(
-            color: AppColors.lightLavender,
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: const Text(
-            'AV',
-            style: TextStyle(
-              color: AppColors.deepInk,
-              fontSize: 12.0,
-              fontWeight: FontWeight.bold,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 34.0,
+              height: 34.0,
+              decoration: BoxDecoration(
+                color: AppColors.pureWhite,
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(
+                  color: const Color(0xFFEDE7F2),
+                  width: 1.0,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const Icon(
+                    Icons.notifications_none_rounded,
+                    color: AppColors.deepInk,
+                    size: 18.0,
+                  ),
+                  Positioned(
+                    top: 7.0,
+                    right: 8.0,
+                    child: Container(
+                      width: 6.0,
+                      height: 6.0,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEF4444),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            const SizedBox(width: 8.0),
+            Container(
+              width: 34.0,
+              height: 34.0,
+              decoration: const BoxDecoration(
+                color: AppColors.avatarBg,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                'AV',
+                style: TextStyle(
+                  color: AppColors.avatarText,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
   Widget _buildHeading(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.headingLarge.copyWith(
-        fontSize: 26.0,
-        fontWeight: FontWeight.bold,
-        color: AppColors.deepInk,
-        letterSpacing: -0.5,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: AppColors.deepInk,
+            fontSize: 24.0,
+            fontWeight: FontWeight.w800,
+            height: 1.25,
+            letterSpacing: -0.3,
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        const Text(
+          'Unlock full access to production labs & live rooms',
+          style: TextStyle(
+            color: AppColors.roomCardSubtext,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildPaywallContent(PremiumLabModel premiumData) {
-    return Center(
+  Widget _buildPaywallHero(PremiumLabModel premiumData) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.heroCardPurple,
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.heroCardPurple.withValues(alpha: 0.25),
+            blurRadius: 18.0,
+            offset: const Offset(0, 6.0),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Tall gold lock outline icon
           Container(
-            width: 22.0,
-            height: 38.0,
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
             decoration: BoxDecoration(
-              border: Border.all(
-                color: AppColors.youngVipGold,
-                width: 2.8,
-              ),
-              borderRadius: BorderRadius.circular(4.0),
+              color: const Color(0xFF857A9D),
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.workspace_premium_rounded,
+                  color: Colors.white,
+                  size: 13.0,
+                ),
+                SizedBox(width: 3.0),
+                Text(
+                  'VIP ALL-ACCESS PASS',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 22.0),
+          const SizedBox(height: 14.0),
           Text(
             premiumData.heading,
             style: const TextStyle(
-              color: AppColors.deepInk,
-              fontSize: 22.0,
+              color: Colors.white,
+              fontSize: 19.0,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 14.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              premiumData.description,
-              style: const TextStyle(
-                color: AppColors.blueGray,
-                fontSize: 13.5,
-                height: 1.45,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 38.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomButton(
-                label: r'$19 / month',
-                onPressed: () {},
-                backgroundColor: AppColors.royalIndigo,
-                textColor: AppColors.pureWhite,
-              ),
-              const SizedBox(width: 14.0),
-              CustomButton(
-                label: r'$149 / year',
-                onPressed: () {},
-                backgroundColor: AppColors.youngVipGold,
-                textColor: AppColors.pureWhite,
-              ),
-            ],
-          ),
-          const SizedBox(height: 18.0),
+          const SizedBox(height: 8.0),
           Text(
-            premiumData.footnote,
+            premiumData.description,
             style: const TextStyle(
-              color: AppColors.youngVipGold,
-              fontSize: 11.5,
-              fontWeight: FontWeight.bold,
+              color: AppColors.heroCardSubtext,
+              fontSize: 12.5,
+              height: 1.45,
             ),
             textAlign: TextAlign.center,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPricingCards() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.pureWhite,
+              borderRadius: BorderRadius.circular(18.0),
+              border: Border.all(
+                color: const Color(0xFFEDE7F2),
+                width: 1.0,
+              ),
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const Text(
+                  'Monthly',
+                  style: TextStyle(
+                    color: AppColors.roomCardSubtext,
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4.0),
+                const Text(
+                  r'$19',
+                  style: TextStyle(
+                    color: AppColors.deepInk,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 7.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.roomCardBg,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Text(
+                    'Select',
+                    style: TextStyle(
+                      color: AppColors.deepInk,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 12.0),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.pureWhite,
+              borderRadius: BorderRadius.circular(18.0),
+              border: Border.all(
+                color: AppColors.deepInk,
+                width: 1.5,
+              ),
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const Text(
+                  'Annual (Save 35%)',
+                  style: TextStyle(
+                    color: Color(0xFF059669),
+                    fontSize: 11.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4.0),
+                const Text(
+                  r'$149',
+                  style: TextStyle(
+                    color: AppColors.deepInk,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 7.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.deepInk,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Text(
+                    'Best Value →',
+                    style: TextStyle(
+                      color: AppColors.pureWhite,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
+import '../core/navigation/tab_navigation_service.dart';
 import '../core/theme/app_colors.dart';
-import '../views/discover_view.dart';
-import '../views/lab_room_view.dart';
-import '../views/labs_view.dart';
-import '../views/my_builds_view.dart';
-import '../views/my_fluency_view.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -19,132 +15,140 @@ class CustomBottomNavBar extends StatelessWidget {
   static void handleNavigation(
       BuildContext context, int targetIndex, int currentIndex) {
     if (targetIndex == currentIndex) return;
-    switch (targetIndex) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const DiscoverView()),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LabsView()),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LabRoomView()),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const MyBuildsView()),
-        );
-        break;
-      case 4:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const MyFluencyView()),
-        );
-        break;
-    }
+    TabNavigationService.switchToTab(context, targetIndex);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget buildTwoBarsIcon(Color color) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 3.0,
-              height: 12.0,
-              decoration: BoxDecoration(
-                border: Border.all(color: color, width: 1.2),
-                borderRadius: BorderRadius.circular(1.0),
-              ),
-            ),
-            const SizedBox(width: 3.0),
-            Container(
-              width: 3.0,
-              height: 12.0,
-              decoration: BoxDecoration(
-                border: Border.all(color: color, width: 1.2),
-                borderRadius: BorderRadius.circular(1.0),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    final List<Map<String, dynamic>> navItems = [
+      {'icon': Icons.explore_rounded, 'label': 'Discover'},
+      {'icon': Icons.science_rounded, 'label': 'Labs'},
+      {'icon': Icons.forum_rounded, 'label': 'Rooms'},
+      {'icon': Icons.widgets_rounded, 'label': 'Builds'},
+      {'icon': Icons.workspace_premium_rounded, 'label': 'Fluency'},
+    ];
 
-    Widget navBar = BottomNavigationBar(
-      currentIndex: currentIndex,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: AppColors.warmIvory,
-      selectedItemColor: AppColors.royalIndigo,
-      unselectedItemColor: AppColors.blueGray.withValues(alpha: 0.7),
-      selectedFontSize: 10.0,
-      unselectedFontSize: 10.0,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
-      unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
-      elevation: 0,
-      items: [
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(bottom: 4.0),
-            child: Icon(Icons.auto_awesome, size: 14.0),
-          ),
-          label: 'Discover',
+    Widget navDock = Container(
+      height: 52.0,
+      margin: const EdgeInsets.fromLTRB(18.0, 0, 18.0, 12.0),
+      decoration: BoxDecoration(
+        color: AppColors.pureWhite,
+        borderRadius: BorderRadius.circular(30.0),
+        border: Border.all(
+          color: const Color(0xFFEDE7F2),
+          width: 1.0,
         ),
-        BottomNavigationBarItem(
-          icon: buildTwoBarsIcon(
-            currentIndex == 1
-                ? AppColors.royalIndigo
-                : AppColors.blueGray.withValues(alpha: 0.7),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1F1A24).withValues(alpha: 0.07),
+            blurRadius: 20.0,
+            offset: const Offset(0, 6.0),
           ),
-          label: 'Labs',
-        ),
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(bottom: 4.0),
-            child: Icon(Icons.circle_outlined, size: 14.0),
-          ),
-          label: 'Rooms',
-        ),
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(bottom: 4.0),
-            child: Icon(Icons.hexagon_outlined, size: 14.0),
-          ),
-          label: 'Builds',
-        ),
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(bottom: 4.0),
-            child: Icon(Icons.star, size: 14.0),
-          ),
-          label: 'Fluency',
-        ),
-      ],
-      onTap: onTap ?? (index) => handleNavigation(context, index, currentIndex),
+        ],
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const double horizontalPadding = 5.0;
+          const double verticalPadding = 5.0;
+          final double usableWidth = constraints.maxWidth - (horizontalPadding * 2);
+          final double itemWidth = usableWidth / navItems.length;
+
+          return Stack(
+            children: [
+              // Smooth sliding pill indicator
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOutCubic,
+                left: horizontalPadding + (currentIndex * itemWidth),
+                top: verticalPadding,
+                bottom: verticalPadding,
+                width: itemWidth,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.deepInk,
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                ),
+              ),
+              // Tab item tap targets and icons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Row(
+                  children: List.generate(navItems.length, (index) {
+                    final bool isSelected = currentIndex == index;
+                    final item = navItems[index];
+
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (onTap != null) {
+                            onTap!(index);
+                          } else {
+                            handleNavigation(context, index, currentIndex);
+                          }
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          height: double.infinity,
+                          alignment: Alignment.center,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: isSelected
+                                ? FittedBox(
+                                    key: ValueKey('sel_$index'),
+                                    fit: BoxFit.scaleDown,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            item['icon'] as IconData,
+                                            size: 15.0,
+                                            color: AppColors.pureWhite,
+                                          ),
+                                          const SizedBox(width: 4.5),
+                                          Text(
+                                            item['label'] as String,
+                                            style: const TextStyle(
+                                              color: AppColors.pureWhite,
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : Icon(
+                                    key: ValueKey('unsel_$index'),
+                                    item['icon'] as IconData,
+                                    size: 17.5,
+                                    color: AppColors.mutedPurple,
+                                  ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
 
     return Container(
-      color: AppColors.warmIvory,
+      color: Colors.transparent,
       width: double.infinity,
       child: Align(
-        alignment: Alignment.center,
+        alignment: Alignment.bottomCenter,
         heightFactor: 1.0,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 540.0),
-          child: navBar,
+          child: navDock,
         ),
       ),
     );

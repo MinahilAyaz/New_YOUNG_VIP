@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'views/discover_view.dart';
+import 'views/main_navigation_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Young VIP',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.buildLightTheme(),
-      home: const DiscoverView(),
+      home: const MainNavigationView(initialIndex: 0),
     );
   }
 }

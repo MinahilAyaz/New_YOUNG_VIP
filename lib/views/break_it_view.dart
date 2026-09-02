@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
-import '../core/theme/app_text_styles.dart';
 import '../data/models/lab_stage_screen_model.dart';
 import '../viewmodels/break_it_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/custom_card.dart';
 
 class BreakItView extends StatelessWidget {
-  const BreakItView({super.key});
+  final bool isRootTab;
+
+  const BreakItView({
+    super.key,
+    this.isRootTab = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +35,22 @@ class BreakItView extends StatelessWidget {
                   child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(
                       horizontal: horizontalPadding,
-                      vertical: 20.0,
+                      vertical: 12.0,
                     ),
                     child: SizedBox(
                       width: double.infinity,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildTopBar(),
-                          const SizedBox(height: 28.0),
+                          _buildTopBar(context),
+                          const SizedBox(height: 18.0),
                           _buildHeader(stageData),
-                          const SizedBox(height: 24.0),
+                          const SizedBox(height: 18.0),
                           _buildStepper(stageData.steps),
-                          const SizedBox(height: 28.0),
+                          const SizedBox(height: 20.0),
                           _buildContentBlocks(stageData.contentBlocks),
+                          const SizedBox(height: 16.0),
+                          _buildProceedPill(context),
                           const SizedBox(height: 16.0),
                         ],
                       ),
@@ -57,57 +61,127 @@ class BreakItView extends StatelessWidget {
             );
           },
         ),
-        bottomNavigationBar: const CustomBottomNavBar(
-          currentIndex: 1,
-        ),
+        bottomNavigationBar: isRootTab
+            ? null
+            : const CustomBottomNavBar(
+                currentIndex: 1,
+              ),
       ),
     );
   }
 
-  Widget _buildTopBar() {
+  Widget _buildTopBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RichText(
-          text: const TextSpan(
+        GestureDetector(
+          onTap: () => Navigator.maybePop(context),
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextSpan(
-                text: 'YOUNG ',
-                style: TextStyle(
+              Container(
+                width: 34.0,
+                height: 34.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color: const Color(0xFFEDE7F2),
+                    width: 1.0,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.arrow_back_rounded,
                   color: AppColors.deepInk,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
+                  size: 18.0,
                 ),
               ),
-              TextSpan(
-                text: 'VIP',
-                style: TextStyle(
-                  color: AppColors.youngVipGold,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
+              const SizedBox(width: 10.0),
+              RichText(
+                text: const TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'YOUNG ',
+                      style: TextStyle(
+                        color: AppColors.deepInk,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'VIP',
+                      style: TextStyle(
+                        color: AppColors.mutedPurple,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-        Container(
-          width: 36.0,
-          height: 36.0,
-          decoration: const BoxDecoration(
-            color: AppColors.lightLavender,
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: const Text(
-            'AV',
-            style: TextStyle(
-              color: AppColors.deepInk,
-              fontSize: 12.0,
-              fontWeight: FontWeight.bold,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 34.0,
+              height: 34.0,
+              decoration: BoxDecoration(
+                color: AppColors.pureWhite,
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(
+                  color: const Color(0xFFEDE7F2),
+                  width: 1.0,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const Icon(
+                    Icons.notifications_none_rounded,
+                    color: AppColors.deepInk,
+                    size: 18.0,
+                  ),
+                  Positioned(
+                    top: 7.0,
+                    right: 8.0,
+                    child: Container(
+                      width: 6.0,
+                      height: 6.0,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEF4444),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            const SizedBox(width: 8.0),
+            Container(
+              width: 34.0,
+              height: 34.0,
+              decoration: const BoxDecoration(
+                color: AppColors.avatarBg,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                'AV',
+                style: TextStyle(
+                  color: AppColors.avatarText,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -119,29 +193,29 @@ class BreakItView extends StatelessWidget {
       children: [
         Text(
           stageData.stageTitle,
-          style: AppTextStyles.headingLarge.copyWith(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
+          style: const TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.w800,
             color: AppColors.deepInk,
-            letterSpacing: -0.5,
+            letterSpacing: -0.3,
           ),
         ),
-        const SizedBox(height: 12.0),
+        const SizedBox(height: 8.0),
         Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: 12.0,
-            vertical: 5.0,
+            horizontal: 10.0,
+            vertical: 3.5,
           ),
           decoration: BoxDecoration(
-            color: AppColors.coral.withValues(alpha: 0.12),
+            color: AppColors.pastelCoral,
             borderRadius: BorderRadius.circular(14.0),
           ),
           child: Text(
             stageData.labTagLabel,
             style: const TextStyle(
-              color: AppColors.coral,
-              fontSize: 10.0,
-              fontWeight: FontWeight.bold,
+              color: AppColors.pastelCoralText,
+              fontSize: 9.5,
+              fontWeight: FontWeight.w800,
               letterSpacing: 0.8,
             ),
           ),
@@ -151,45 +225,46 @@ class BreakItView extends StatelessWidget {
   }
 
   Widget _buildStepper(List<StageStepModel> steps) {
-    return Row(
-      children: steps.map((step) {
-        return Expanded(
-          child: Column(
-            children: [
-              if (step.isActive)
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: AppColors.pureWhite,
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(
+          color: const Color(0xFFEDE7F2),
+          width: 1.0,
+        ),
+      ),
+      child: Row(
+        children: steps.map((step) {
+          final isCurrent = step.isActive;
+          return Expanded(
+            child: Column(
+              children: [
                 Container(
-                  width: 13.0,
-                  height: 13.0,
-                  decoration: const BoxDecoration(
-                    color: AppColors.coral,
-                    shape: BoxShape.circle,
-                  ),
-                )
-              else
-                Container(
-                  width: 10.0,
-                  height: 10.0,
+                  width: isCurrent ? 12.0 : 8.0,
+                  height: isCurrent ? 12.0 : 8.0,
                   decoration: BoxDecoration(
+                    color: isCurrent ? AppColors.deepInk : const Color(0xFFD8D2E3),
                     shape: BoxShape.circle,
-                    color: AppColors.blueGray.withValues(alpha: 0.25),
                   ),
                 ),
-              const SizedBox(height: 6.0),
-              Text(
-                step.label,
-                style: TextStyle(
-                  color: step.isActive ? AppColors.coral : AppColors.blueGray,
-                  fontSize: 11.0,
-                  fontWeight:
-                      step.isActive ? FontWeight.bold : FontWeight.w500,
+                const SizedBox(height: 4.0),
+                Text(
+                  step.label,
+                  style: TextStyle(
+                    color: isCurrent ? AppColors.deepInk : AppColors.roomCardSubtext,
+                    fontSize: 10.5,
+                    fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
@@ -197,7 +272,7 @@ class BreakItView extends StatelessWidget {
     return Column(
       children: blocks.map((block) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
+          padding: const EdgeInsets.only(bottom: 12.0),
           child: _buildContentCard(block),
         );
       }).toList(),
@@ -206,108 +281,133 @@ class BreakItView extends StatelessWidget {
 
   Widget _buildBlockIcon(ContentBlockModel block) {
     if (block.tagLabel == 'SCENARIO') {
-      return Padding(
-        padding: const EdgeInsets.only(left: 2.0, right: 4.0),
-        child: Transform.rotate(
-          angle: 0.785398, // 45 degrees
-          child: Container(
-            width: 10.0,
-            height: 10.0,
-            decoration: BoxDecoration(
-              border: Border.all(color: block.accentColor, width: 1.5),
-            ),
-          ),
-        ),
-      );
+      return Icon(Icons.psychology_alt_rounded, size: 18.0, color: block.accentColor);
     } else if (block.tagLabel == 'QUIZ') {
-      return Padding(
-        padding: const EdgeInsets.only(left: 2.0, right: 4.0),
-        child: Text(
-          '?',
-          style: TextStyle(
-            color: block.accentColor,
-            fontSize: 16.0,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      );
+      return Icon(Icons.help_outline_rounded, size: 18.0, color: block.accentColor);
     } else {
-      return Icon(
-        Icons.play_arrow,
-        size: 19.0,
-        color: block.accentColor,
-      );
+      return Icon(Icons.play_circle_outline_rounded, size: 18.0, color: block.accentColor);
     }
   }
 
   Widget _buildContentCard(ContentBlockModel block) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      child: CustomCard(
-        backgroundColor: block.cardBackgroundColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
+      decoration: BoxDecoration(
+        color: block.cardBackgroundColor,
+        borderRadius: BorderRadius.circular(18.0),
+        border: Border.all(
+          color: const Color(0xFFEDE7F2),
+          width: 1.0,
+        ),
+      ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+              vertical: 2.5,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.pureWhite,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              block.tagLabel,
+              style: TextStyle(
+                color: block.accentColor,
+                fontSize: 9.0,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12.0),
+          Row(
+            children: [
+              _buildBlockIcon(block),
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  block.title,
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.deepInk,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4.0),
+          Text(
+            block.description,
+            style: const TextStyle(
+              color: AppColors.roomCardSubtext,
+              fontSize: 12.0,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 12.0),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 4.0,
+                horizontal: 16.0,
+                vertical: 6.5,
               ),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(
+                  color: const Color(0xFFEDE7F2),
+                  width: 1.0,
+                ),
               ),
               child: Text(
-                block.tagLabel,
+                block.buttonLabel,
                 style: TextStyle(
                   color: block.accentColor,
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.8,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(height: 14.0),
-            Row(
-              children: [
-                _buildBlockIcon(block),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    block.title,
-                    style: AppTextStyles.headingSmall.copyWith(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.deepInk,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6.0),
-            Text(
-              block.description,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.blueGray,
-                fontSize: 12.0,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 14.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: CustomButton(
-                label: block.buttonLabel,
-                onPressed: () {},
-                isPrimary: false,
-                textColor: block.accentColor,
-              ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProceedPill(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 22.0,
+          vertical: 8.0,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.deepInk,
+          borderRadius: BorderRadius.circular(24.0),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.deepInk.withValues(alpha: 0.15),
+              blurRadius: 16.0,
+              offset: const Offset(0, 4.0),
             ),
           ],
+        ),
+        child: const Text(
+          'Complete Stage & Proceed →',
+          style: TextStyle(
+            color: AppColors.pureWhite,
+            fontSize: 12.5,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

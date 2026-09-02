@@ -12,23 +12,23 @@ class DiscoverViewModel extends BaseViewModel {
       : _categories = [
           const DiscoverCategoryModel(
             title: 'AI Agents',
-            backgroundColor: AppColors.lightLavender,
-            accentColor: AppColors.royalIndigo,
+            backgroundColor: AppColors.pastelLavender,
+            accentColor: AppColors.pastelLavenderText,
           ),
-          DiscoverCategoryModel(
+          const DiscoverCategoryModel(
             title: 'RAG',
-            backgroundColor: AppColors.softGreen.withValues(alpha: 0.12),
-            accentColor: AppColors.softGreen,
+            backgroundColor: AppColors.pastelSage,
+            accentColor: AppColors.pastelSageText,
           ),
-          DiscoverCategoryModel(
+          const DiscoverCategoryModel(
             title: 'Security',
-            backgroundColor: AppColors.coral.withValues(alpha: 0.12),
-            accentColor: AppColors.coral,
+            backgroundColor: AppColors.pastelCoral,
+            accentColor: AppColors.pastelCoralText,
           ),
-          DiscoverCategoryModel(
+          const DiscoverCategoryModel(
             title: 'Automation',
-            backgroundColor: AppColors.youngVipGold.withValues(alpha: 0.15),
-            accentColor: AppColors.youngVipGold,
+            backgroundColor: AppColors.pastelSand,
+            accentColor: AppColors.pastelSandText,
           ),
         ],
         _currentRoom = const CurrentRoomModel(

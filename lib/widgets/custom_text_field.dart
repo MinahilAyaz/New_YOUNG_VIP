@@ -24,9 +24,9 @@ class CustomTextField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(
-          color: AppColors.blueGray.withValues(alpha: 0.8),
-          fontSize: 14.0,
+        hintStyle: const TextStyle(
+          color: AppColors.searchHint,
+          fontSize: 13.5,
           fontWeight: FontWeight.w400,
         ),
         filled: true,
@@ -34,34 +34,34 @@ class CustomTextField extends StatelessWidget {
         prefixIcon: prefixIcon != null
             ? Icon(
                 prefixIcon,
-                color: AppColors.blueGray.withValues(alpha: 0.7),
-                size: 20.0,
+                color: const Color(0xFF5C93C4),
+                size: 19.0,
               )
             : null,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          borderSide: BorderSide(
-            color: AppColors.blueGray.withValues(alpha: 0.18),
+          borderRadius: BorderRadius.circular(28.0),
+          borderSide: const BorderSide(
+            color: Color(0xFFEDE7F2),
             width: 1.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          borderSide: BorderSide(
-            color: AppColors.blueGray.withValues(alpha: 0.18),
+          borderRadius: BorderRadius.circular(28.0),
+          borderSide: const BorderSide(
+            color: Color(0xFFEDE7F2),
             width: 1.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(28.0),
           borderSide: const BorderSide(
-            color: AppColors.royalIndigo,
+            color: AppColors.mutedPurple,
             width: 1.5,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 14.0,
+          horizontal: 20.0,
+          vertical: 11.0,
         ),
       ),
     );
