@@ -677,6 +677,32 @@ class LabCompleteView extends StatelessWidget {
         GestureDetector(
           onTap: () {
             Navigator.pop(context);
+            TabNavigationService.switchToTab(context, 3);
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 14.0),
+            decoration: BoxDecoration(
+              color: AppColors.pastelLavender,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: AppColors.buttonShadow,
+            ),
+            alignment: Alignment.center,
+            child: const Text(
+              'View in My Builds',
+              style: TextStyle(
+                color: AppColors.pastelLavenderText,
+                fontSize: 13.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ProfileView()),

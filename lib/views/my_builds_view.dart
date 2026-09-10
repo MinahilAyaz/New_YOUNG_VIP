@@ -5,8 +5,11 @@ import 'package:provider/provider.dart';
 import '../core/theme/app_colors.dart';
 import '../data/models/my_builds_model.dart';
 import '../viewmodels/my_builds_view_model.dart';
+import '../core/navigation/tab_navigation_service.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
+import 'lab_complete_view.dart';
+import 'profile_view.dart';
 
 class MyBuildsView extends StatelessWidget {
   final bool isRootTab;
@@ -55,7 +58,7 @@ class MyBuildsView extends StatelessWidget {
                           const SizedBox(height: 18.0),
                           _buildSectionHeader('Live Workflows (${viewModel.filteredItems.length})'),
                           const SizedBox(height: 12.0),
-                          _buildBuildItemsList(viewModel.filteredItems),
+                          _buildBuildItemsList(context, viewModel.filteredItems),
                           const SizedBox(height: 16.0),
                           _buildCreateBuildPill(context),
                           const SizedBox(height: 88.0),
@@ -120,53 +123,76 @@ class MyBuildsView extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
-                  ),
-                  Positioned(
-                    top: 7.0,
-                    right: 8.0,
-                    child: Container(
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All build notifications and verification badges are up to date.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                ],
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
+                    ),
+                    Positioned(
+                      top: 7.0,
+                      right: 8.0,
+                      child: Container(
+                        width: 6.0,
+                        height: 6.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 8.0),
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.avatarBg,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'AV',
-                style: TextStyle(
-                  color: AppColors.avatarText,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.avatarBg,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'AV',
+                  style: TextStyle(
+                    color: AppColors.avatarText,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -378,18 +404,18 @@ class MyBuildsView extends StatelessWidget {
     );
   }
 
-  Widget _buildBuildItemsList(List<BuildItemModel> items) {
+  Widget _buildBuildItemsList(BuildContext context, List<BuildItemModel> items) {
     return Column(
       children: items.map((item) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
-          child: _buildBuildCard(item),
+          child: _buildBuildCard(context, item),
         );
       }).toList(),
     );
   }
 
-  Widget _buildBuildCard(BuildItemModel item) {
+  Widget _buildBuildCard(BuildContext context, BuildItemModel item) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
@@ -468,22 +494,31 @@ class MyBuildsView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8.0),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14.0,
-              vertical: 7.0,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.alabaster,
-              borderRadius: BorderRadius.circular(20.0),
-              boxShadow: AppColors.buttonShadow,
-            ),
-            child: const Text(
-              'Inspect →',
-              style: TextStyle(
-                color: AppColors.deepInk,
-                fontSize: 11.0,
-                fontWeight: FontWeight.bold,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LabCompleteView()),
+              );
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14.0,
+                vertical: 7.0,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.alabaster,
+                borderRadius: BorderRadius.circular(20.0),
+                boxShadow: AppColors.buttonShadow,
+              ),
+              child: const Text(
+                'Inspect →',
+                style: TextStyle(
+                  color: AppColors.deepInk,
+                  fontSize: 11.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -494,36 +529,42 @@ class MyBuildsView extends StatelessWidget {
 
   Widget _buildCreateBuildPill(BuildContext context) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 22.0,
-          vertical: 8.0,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.deepInk,
-          borderRadius: BorderRadius.circular(24.0),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.deepInk.withValues(alpha: 0.15),
-              blurRadius: 16.0,
-              offset: const Offset(0, 4.0),
-            ),
-          ],
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.add_rounded, color: AppColors.pureWhite, size: 16.0),
-            SizedBox(width: 6.0),
-            Text(
-              'Create New Build',
-              style: TextStyle(
-                color: AppColors.pureWhite,
-                fontSize: 12.5,
-                fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () {
+          TabNavigationService.switchToTab(context, 1);
+        },
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 22.0,
+            vertical: 8.0,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.deepInk,
+            borderRadius: BorderRadius.circular(24.0),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.deepInk.withValues(alpha: 0.15),
+                blurRadius: 16.0,
+                offset: const Offset(0, 4.0),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add_rounded, color: AppColors.pureWhite, size: 16.0),
+              SizedBox(width: 6.0),
+              Text(
+                'Create New Build',
+                style: TextStyle(
+                  color: AppColors.pureWhite,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

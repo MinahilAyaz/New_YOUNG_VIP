@@ -8,6 +8,7 @@ import '../viewmodels/my_fluency_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
 import 'assessment_result_view.dart';
+import 'profile_view.dart';
 
 class MyFluencyView extends StatelessWidget {
   final bool isRootTab;
@@ -54,7 +55,7 @@ class MyFluencyView extends StatelessWidget {
                           const SizedBox(height: 22.0),
                           _buildSectionHeader('Competency Domains (${fluencyData.skills.length})'),
                           const SizedBox(height: 12.0),
-                          _buildSkillsList(fluencyData.skills),
+                          _buildSkillsList(context, fluencyData.skills),
                           const SizedBox(height: 20.0),
                           _buildSectionHeader('Verified Credentials'),
                           const SizedBox(height: 12.0),
@@ -121,53 +122,76 @@ class MyFluencyView extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
-                  ),
-                  Positioned(
-                    top: 7.0,
-                    right: 8.0,
-                    child: Container(
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Fluency assessment credentials & verified badges are up to date.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                ],
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
+                    ),
+                    Positioned(
+                      top: 7.0,
+                      right: 8.0,
+                      child: Container(
+                        width: 6.0,
+                        height: 6.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 8.0),
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.avatarBg,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'AV',
-                style: TextStyle(
-                  color: AppColors.avatarText,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.avatarBg,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'AV',
+                  style: TextStyle(
+                    color: AppColors.avatarText,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -369,28 +393,36 @@ class MyFluencyView extends StatelessWidget {
     );
   }
 
-  Widget _buildSkillsList(List<FluencySkillModel> skills) {
+  Widget _buildSkillsList(BuildContext context, List<FluencySkillModel> skills) {
     return Column(
       children: skills.map((skill) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
-          child: _buildSkillCard(skill),
+          child: _buildSkillCard(context, skill),
         );
       }).toList(),
     );
   }
 
-  Widget _buildSkillCard(FluencySkillModel skill) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(22.0),
-        boxShadow: AppColors.softShadow,
-      ),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+  Widget _buildSkillCard(BuildContext context, FluencySkillModel skill) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AssessmentResultView()),
+        );
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.pureWhite,
+          borderRadius: BorderRadius.circular(22.0),
+          boxShadow: AppColors.softShadow,
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -490,8 +522,9 @@ class MyFluencyView extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildCertificateCard(BuildContext context) {
     return Container(

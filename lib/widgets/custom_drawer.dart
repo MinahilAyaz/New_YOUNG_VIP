@@ -2,19 +2,28 @@ import 'package:flutter/material.dart';
 
 import '../core/navigation/tab_navigation_service.dart';
 import '../core/theme/app_colors.dart';
-import '../views/admin_dashboard_view.dart';
 import '../views/advise_better_view.dart';
 import '../views/all_access_pricing_view.dart';
+import '../views/application_review_status_view.dart';
+import '../views/apply_as_expert_view.dart';
+import '../views/build_expert_approved_view.dart';
 import '../views/break_it_view.dart';
 import '../views/build_it_view.dart';
 import '../views/contextual_connection_view.dart';
 import '../views/edit_profile_view.dart';
 import '../views/expert_studio_view.dart';
+import '../views/lab_builder_view.dart';
+import '../views/lab_preview_view.dart';
 import '../views/lab_complete_view.dart';
+import '../views/messages_view.dart';
+import '../views/peers_view.dart';
 import '../views/premium_lab_view.dart';
 import '../views/premium_locked_gate_view.dart';
 import '../views/profile_view.dart';
+import '../views/proposal_approval_status_view.dart';
+import '../views/propose_lab_view.dart';
 import '../views/review_experts_view.dart';
+import '../views/submit_revision_view.dart';
 import '../views/understand_it_view.dart';
 import 'custom_card.dart';
 import 'young_vip_wordmark.dart';
@@ -109,6 +118,51 @@ class CustomDrawer extends StatelessWidget {
               const SizedBox(height: 6.0),
               _buildDrawerItem(
                 context: context,
+                icon: Icons.workspace_premium_outlined,
+                title: 'Apply as Expert',
+                subtitle: 'Join Build Expert creator program',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const ApplyAsExpertView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.hourglass_top_rounded,
+                title: 'Application Review',
+                subtitle: 'Your application is under review',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const ApplicationReviewStatusView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.verified_rounded,
+                title: 'Expert Approved',
+                subtitle: "You're approved as a Build Expert",
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const BuildExpertApprovedView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
                 icon: Icons.how_to_reg_outlined,
                 title: 'Review Experts',
                 subtitle: 'Approve or reject creator applications',
@@ -121,21 +175,7 @@ class CustomDrawer extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 10.0),
-              _buildDrawerItem(
-                context: context,
-                icon: Icons.dashboard_customize_outlined,
-                title: 'Admin Dashboard',
-                subtitle: 'Overview stats — members, labs, revenue',
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const AdminDashboardView()),
-                  );
-                },
-              ),
+
               const SizedBox(height: 10.0),
               _buildDrawerItem(
                 context: context,
@@ -148,6 +188,81 @@ class CustomDrawer extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (_) => const ExpertStudioView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.post_add_rounded,
+                title: 'Propose Lab',
+                subtitle: 'Submit a new lab proposal',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const ProposeLabView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.fact_check_rounded,
+                title: 'Proposal Approval',
+                subtitle: 'Status screen — proposal review state',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const ProposalApprovalStatusView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.architecture_rounded,
+                title: 'Lab Builder',
+                subtitle: 'Full editor to build lab content',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const LabBuilderView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.preview_rounded,
+                title: 'Lab Preview',
+                subtitle: 'Preview the lab before submission',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const LabPreviewView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.rate_review_rounded,
+                title: 'Submit & Revision',
+                subtitle: 'Submit lab + handle revision requests',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const SubmitRevisionView()),
                   );
                 },
               ),
@@ -292,9 +407,39 @@ class CustomDrawer extends StatelessWidget {
                   );
                 },
               ),
+              // SECTION 5: COMMUNITY & COLLABORATION
+              _buildSectionLabel('COMMUNITY & COLLABORATION'),
+              const SizedBox(height: 6.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.people_outline_rounded,
+                title: 'Who Else Is Building',
+                subtitle: 'Peers, collaborator cards & networks',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PeersView()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10.0),
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.chat_bubble_outline_rounded,
+                title: 'Messages',
+                subtitle: 'Direct discussions & peer threads',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const MessagesView()),
+                  );
+                },
+              ),
               const SizedBox(height: 12.0),
 
-              // SECTION 5: ACCOUNT
+              // SECTION 6: ACCOUNT
               _buildSectionLabel('ACCOUNT'),
               const SizedBox(height: 6.0),
               _buildDrawerItem(

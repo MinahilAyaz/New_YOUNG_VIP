@@ -7,6 +7,7 @@ import '../viewmodels/lab_room_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/young_vip_wordmark.dart';
+import 'profile_view.dart';
 
 class LabRoomView extends StatelessWidget {
   final bool isRootTab;
@@ -53,7 +54,7 @@ class LabRoomView extends StatelessWidget {
                           const SizedBox(height: 20.0),
                           _buildSectionHeader('Live Observations (${roomData.posts.length})'),
                           const SizedBox(height: 12.0),
-                          _buildPostList(roomData.posts),
+                          _buildPostList(context, roomData.posts),
                           const SizedBox(height: 16.0),
                           _buildPostActionPill(context),
                           const SizedBox(height: 88.0),
@@ -118,53 +119,76 @@ class LabRoomView extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
-                  ),
-                  Positioned(
-                    top: 7.0,
-                    right: 8.0,
-                    child: Container(
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All room discussions and threads are up to date.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                ],
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
+                    ),
+                    Positioned(
+                      top: 7.0,
+                      right: 8.0,
+                      child: Container(
+                        width: 6.0,
+                        height: 6.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 8.0),
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.avatarBg,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'AV',
-                style: TextStyle(
-                  color: AppColors.avatarText,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.avatarBg,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'AV',
+                  style: TextStyle(
+                    color: AppColors.avatarText,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -315,18 +339,18 @@ class LabRoomView extends StatelessWidget {
     );
   }
 
-  Widget _buildPostList(List<RoomPostModel> posts) {
+  Widget _buildPostList(BuildContext context, List<RoomPostModel> posts) {
     return Column(
       children: posts.map((post) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
-          child: _buildPostCard(post),
+          child: _buildPostCard(context, post),
         );
       }).toList(),
     );
   }
 
-  Widget _buildPostCard(RoomPostModel post) {
+  Widget _buildPostCard(BuildContext context, RoomPostModel post) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -338,89 +362,100 @@ class LabRoomView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 38.0,
-                height: 38.0,
-                decoration: const BoxDecoration(
-                  color: AppColors.avatarBg,
-                  shape: BoxShape.circle,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ProfileView(),
                 ),
-                alignment: Alignment.center,
-                child: Text(
-                  post.initials,
-                  style: const TextStyle(
-                    color: AppColors.avatarText,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.bold,
+              );
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 38.0,
+                  height: 38.0,
+                  decoration: const BoxDecoration(
+                    color: AppColors.avatarBg,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    post.initials,
+                    style: const TextStyle(
+                      color: AppColors.avatarText,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10.0),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      post.authorName,
-                      style: const TextStyle(
-                        color: AppColors.deepInk,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
+                const SizedBox(width: 10.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        post.authorName,
+                        style: const TextStyle(
+                          color: AppColors.deepInk,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 2.0),
+                      Text(
+                        post.role,
+                        style: const TextStyle(
+                          color: AppColors.roomCardSubtext,
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 2.5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: post.tagBgColor,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        post.tagLabel,
+                        style: TextStyle(
+                          color: post.tagTextColor,
+                          fontSize: 9.0,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 2.0),
+                    const SizedBox(height: 4.0),
                     Text(
-                      post.role,
+                      post.timestamp,
                       style: const TextStyle(
                         color: AppColors.roomCardSubtext,
-                        fontSize: 11.0,
+                        fontSize: 10.5,
                         fontWeight: FontWeight.w500,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 2.5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: post.tagBgColor,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text(
-                      post.tagLabel,
-                      style: TextStyle(
-                        color: post.tagTextColor,
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4.0),
-                  Text(
-                    post.timestamp,
-                    style: const TextStyle(
-                      color: AppColors.roomCardSubtext,
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 12.0),
           Text(
@@ -437,19 +472,42 @@ class LabRoomView extends StatelessWidget {
               _buildInteractionChip(
                 icon: Icons.favorite_border_rounded,
                 label: '${post.likes}',
-                onTap: () {},
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Liked ${post.authorName}\'s observation'),
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
               ),
               const SizedBox(width: 14.0),
               _buildInteractionChip(
                 icon: Icons.chat_bubble_outline_rounded,
                 label: '${post.replies}',
-                onTap: () {},
+                onTap: () => _showPostObservationSheet(context),
               ),
               const Spacer(),
-              const Icon(
-                Icons.bookmark_border_rounded,
-                size: 16.0,
-                color: AppColors.roomCardSubtext,
+              GestureDetector(
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Observation saved to your bookmarks.'),
+                      behavior: SnackBarBehavior.floating,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                behavior: HitTestBehavior.opaque,
+                child: const Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.bookmark_border_rounded,
+                    size: 16.0,
+                    color: AppColors.roomCardSubtext,
+                  ),
+                ),
               ),
             ],
           ),
@@ -486,38 +544,140 @@ class LabRoomView extends StatelessWidget {
 
   Widget _buildPostActionPill(BuildContext context) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 22.0,
-          vertical: 8.0,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.deepInk,
-          borderRadius: BorderRadius.circular(24.0),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.deepInk.withValues(alpha: 0.15),
-              blurRadius: 16.0,
-              offset: const Offset(0, 4.0),
-            ),
-          ],
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.add_rounded, color: AppColors.pureWhite, size: 16.0),
-            SizedBox(width: 6.0),
-            Text(
-              'Post Observation',
-              style: TextStyle(
-                color: AppColors.pureWhite,
-                fontSize: 12.5,
-                fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () => _showPostObservationSheet(context),
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 22.0,
+            vertical: 8.0,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.deepInk,
+            borderRadius: BorderRadius.circular(24.0),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.deepInk.withValues(alpha: 0.15),
+                blurRadius: 16.0,
+                offset: const Offset(0, 4.0),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add_rounded, color: AppColors.pureWhite, size: 16.0),
+              SizedBox(width: 6.0),
+              Text(
+                'Post Observation',
+                style: TextStyle(
+                  color: AppColors.pureWhite,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void _showPostObservationSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          padding: EdgeInsets.only(
+            left: 20.0,
+            right: 20.0,
+            top: 20.0,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Share Lab Observation',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.deepInk,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    icon: const Icon(Icons.close_rounded),
+                    color: AppColors.roomCardSubtext,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6.0),
+              const Text(
+                'Post a question, failure scenario, or insight to this contextual room.',
+                style: TextStyle(fontSize: 12.5, color: AppColors.roomCardSubtext),
+              ),
+              const SizedBox(height: 14.0),
+              TextField(
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: 'Describe your observation or architectural finding…',
+                  hintStyle: const TextStyle(fontSize: 13.0, color: Color(0xFF94A3B8)),
+                  filled: true,
+                  fillColor: const Color(0xFFF8FAFC),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Observation posted to Contextual Lab Room.'),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.deepInk,
+                    padding: const EdgeInsets.symmetric(vertical: 14.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Submit to Room',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

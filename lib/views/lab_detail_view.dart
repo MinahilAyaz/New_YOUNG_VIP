@@ -7,7 +7,10 @@ import '../viewmodels/lab_detail_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/young_vip_wordmark.dart';
+import 'advise_better_view.dart';
 import 'break_it_view.dart';
+import 'build_it_view.dart';
+import 'understand_it_view.dart';
 
 class LabDetailView extends StatelessWidget {
   final bool isRootTab;
@@ -50,7 +53,7 @@ class LabDetailView extends StatelessWidget {
                           const SizedBox(height: 18.0),
                           _buildHeader(detail),
                           const SizedBox(height: 24.0),
-                          _buildStageGrid(detail.stages),
+                          _buildStageGrid(context, detail.stages),
                           const SizedBox(height: 20.0),
                           _buildSummaryCard(context, detail),
                           const SizedBox(height: 88.0),
@@ -229,7 +232,7 @@ class LabDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildStageGrid(List<LabStageModel> stages) {
+  Widget _buildStageGrid(BuildContext context, List<LabStageModel> stages) {
     if (stages.length < 4) return const SizedBox.shrink();
 
     final icons = [
@@ -239,53 +242,69 @@ class LabDetailView extends StatelessWidget {
       Icons.gavel_rounded,
     ];
 
+    final stageDestinations = [
+      const BuildItView(),
+      const BreakItView(),
+      const UnderstandItView(),
+      const AdviseBetterView(),
+    ];
+
     return Column(
       children: [
         Row(
           children: [
-            Expanded(child: _buildStageCard(stages[0], icons[0])),
+            Expanded(child: _buildStageCard(context, stages[0], icons[0], stageDestinations[0])),
             const SizedBox(width: 12.0),
-            Expanded(child: _buildStageCard(stages[1], icons[1])),
+            Expanded(child: _buildStageCard(context, stages[1], icons[1], stageDestinations[1])),
           ],
         ),
         const SizedBox(height: 12.0),
         Row(
           children: [
-            Expanded(child: _buildStageCard(stages[2], icons[2])),
+            Expanded(child: _buildStageCard(context, stages[2], icons[2], stageDestinations[2])),
             const SizedBox(width: 12.0),
-            Expanded(child: _buildStageCard(stages[3], icons[3])),
+            Expanded(child: _buildStageCard(context, stages[3], icons[3], stageDestinations[3])),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildStageCard(LabStageModel stage, IconData icon) {
-    return Container(
-      decoration: BoxDecoration(
-        color: stage.backgroundColor,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: AppColors.buttonShadow,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18.0),
-      child: Row(
-        children: [
-          Icon(icon, size: 18.0, color: stage.textColor),
-          const SizedBox(width: 8.0),
-          Expanded(
-            child: Text(
-              stage.label,
-              style: TextStyle(
-                color: stage.textColor,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.8,
+  Widget _buildStageCard(BuildContext context, LabStageModel stage, IconData icon, Widget destination) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => destination),
+        );
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          color: stage.backgroundColor,
+          borderRadius: BorderRadius.circular(20.0),
+          boxShadow: AppColors.buttonShadow,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18.0),
+        child: Row(
+          children: [
+            Icon(icon, size: 18.0, color: stage.textColor),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: Text(
+                stage.label,
+                style: TextStyle(
+                  color: stage.textColor,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.8,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -328,7 +347,7 @@ class LabDetailView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const BreakItView(),
+                  builder: (_) => const BuildItView(),
                 ),
               );
             },

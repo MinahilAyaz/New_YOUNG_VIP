@@ -11,7 +11,9 @@ import 'advise_better_view.dart';
 import 'break_it_view.dart';
 import 'build_it_view.dart';
 import 'lab_room_view.dart';
+import 'peers_view.dart';
 import 'premium_locked_gate_view.dart';
+import 'profile_view.dart';
 import 'understand_it_view.dart';
 
 class DiscoverView extends StatefulWidget {
@@ -83,6 +85,12 @@ class _DiscoverViewState extends State<DiscoverView> {
                       builder: (ctx) => YVHeader(
                         onOpenDrawer: () => Scaffold.of(ctx).openDrawer(),
                         onNotificationTap: () => _showNotificationSheet(context),
+                        onAvatarTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const ProfileView()),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 18.0),
@@ -1441,14 +1449,39 @@ class _DiscoverViewState extends State<DiscoverView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Who else is building this?',
-          style: TextStyle(
-            color: AppColors.bananiInk,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.3,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const Expanded(
+              child: Text(
+                'Who else is building this?',
+                style: TextStyle(
+                  color: AppColors.bananiInk,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PeersView()),
+                );
+              },
+              child: const Text(
+                'View all peers',
+                style: TextStyle(
+                  color: AppColors.bananiPrimary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 4.0),
         const Text(

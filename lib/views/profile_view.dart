@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import '../core/navigation/tab_navigation_service.dart';
 import '../core/theme/app_colors.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/young_vip_wordmark.dart';
 import 'edit_profile_view.dart';
-import 'my_builds_view.dart';
 
 class ProfileView extends StatefulWidget {
   final bool isRootTab;
@@ -156,50 +156,70 @@ class _ProfileViewState extends State<ProfileView> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 40.0,
-              height: 40.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 20.0,
-                  ),
-                  Positioned(
-                    top: 9.0,
-                    right: 9.0,
-                    child: Container(
-                      width: 7.0,
-                      height: 7.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All profile notifications & credentials are up to date.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                ],
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.deepInk,
+                      size: 20.0,
+                    ),
+                    Positioned(
+                      top: 9.0,
+                      right: 9.0,
+                      child: Container(
+                        width: 7.0,
+                        height: 7.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 10.0),
-            Container(
-              width: 40.0,
-              height: 40.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: const Icon(
-                Icons.search_rounded,
-                color: AppColors.deepInk,
-                size: 20.0,
+            GestureDetector(
+              onTap: () {
+                TabNavigationService.switchToTab(context, 0);
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: const Icon(
+                  Icons.search_rounded,
+                  color: AppColors.deepInk,
+                  size: 20.0,
+                ),
               ),
             ),
           ],
@@ -557,10 +577,7 @@ class _ProfileViewState extends State<ProfileView> {
         const SizedBox(height: 12.0),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const MyBuildsView()),
-            );
+            TabNavigationService.switchToTab(context, 3);
           },
           behavior: HitTestBehavior.opaque,
           child: Container(

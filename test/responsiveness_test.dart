@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:young_vip/views/admin_dashboard_view.dart';
+import 'package:young_vip/views/application_review_status_view.dart';
+import 'package:young_vip/views/apply_as_expert_view.dart';
+import 'package:young_vip/views/build_expert_approved_view.dart';
 import 'package:young_vip/views/assessment_result_view.dart';
 import 'package:young_vip/views/contextual_connection_view.dart';
 import 'package:young_vip/views/create_account_view.dart';
 import 'package:young_vip/views/discover_view.dart';
 import 'package:young_vip/views/homepage_view.dart';
 import 'package:young_vip/views/interests_view.dart';
+import 'package:young_vip/views/lab_builder_view.dart';
+import 'package:young_vip/views/lab_preview_view.dart';
 import 'package:young_vip/views/fluency_assessment_view.dart';
 import 'package:young_vip/views/all_access_pricing_view.dart';
 import 'package:young_vip/views/main_navigation_view.dart';
 import 'package:young_vip/views/premium_locked_gate_view.dart';
 import 'package:young_vip/views/profile_setup_view.dart';
+import 'package:young_vip/views/proposal_approval_status_view.dart';
+import 'package:young_vip/views/propose_lab_view.dart';
 import 'package:young_vip/views/review_experts_view.dart';
+import 'package:young_vip/views/submit_revision_view.dart';
 import 'package:young_vip/views/verify_email_view.dart';
 import 'package:young_vip/widgets/custom_drawer.dart';
 
@@ -472,68 +479,6 @@ void main() {
     });
   });
 
-  group('AdminDashboardView Responsiveness Tests', () {
-    for (final size in testViewports) {
-      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
-          (WidgetTester tester) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-
-        await tester.pumpWidget(
-          const MaterialApp(
-            home: AdminDashboardView(),
-          ),
-        );
-        await tester.pumpAndSettle();
-        final err = tester.takeException();
-        expect(err, isNull);
-        expect(find.text('Admin Dashboard'), findsOneWidget);
-        expect(find.text('TOTAL MEMBERS'), findsOneWidget);
-        expect(find.text('GROSS PLATFORM REVENUE'), findsOneWidget);
-        expect(find.text('\$186,450'), findsOneWidget);
-      });
-    }
-
-    testWidgets('CustomDrawer contains and navigates to AdminDashboardView',
-        (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(412, 915);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            drawer: CustomDrawer(),
-            body: Center(child: Text('Home')),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
-      scaffoldState.openDrawer();
-      await tester.pumpAndSettle();
-
-      final adminItem = find.text('Admin Dashboard');
-      expect(adminItem, findsOneWidget);
-      expect(find.text('Overview stats — members, labs, revenue'), findsOneWidget);
-
-      await tester.ensureVisible(adminItem);
-      await tester.pumpAndSettle();
-
-      await tester.tap(adminItem);
-      await tester.pumpAndSettle();
-
-      expect(find.text('Admin Dashboard'), findsOneWidget);
-      expect(find.text('ENTERPRISE PLATFORM INTELLIGENCE'), findsOneWidget);
-      expect(find.text('TOTAL MEMBERS'), findsOneWidget);
-      expect(find.text('ACTIVE LAB TRACKS'), findsOneWidget);
-      expect(find.text('GROSS PLATFORM REVENUE'), findsOneWidget);
-    });
-  });
 
   group('ReviewExpertsView Responsiveness Tests', () {
     for (final size in testViewports) {
@@ -615,6 +560,804 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('APPROVED'), findsAtLeastNWidgets(2));
+    });
+  });
+
+  group('ApplyAsExpertView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: ApplyAsExpertView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to ApplyAsExpertView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => ElevatedButton(
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Apply as Expert');
+      expect(drawerItem, findsOneWidget);
+
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Apply as Build Expert'), findsOneWidget);
+      expect(find.text('BUILD EXPERT PROGRAM'), findsOneWidget);
+      expect(find.text('Submit Build Expert Application'), findsOneWidget);
+    });
+
+    testWidgets('Submitting application shows success confirmation card',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ApplyAsExpertView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final submitButton = find.text('Submit Build Expert Application');
+      await tester.ensureVisible(submitButton);
+      await tester.pumpAndSettle();
+      await tester.tap(submitButton);
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Application Submitted!'), findsOneWidget);
+      expect(find.text('EXP-2026-COH4-891'), findsOneWidget);
+      expect(find.text('Return to Platform'), findsOneWidget);
+    });
+  });
+
+  group('ApplicationReviewStatusView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: ApplicationReviewStatusView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Your Application is Under Review'), findsOneWidget);
+        expect(find.text('APPLICATION STATUS'), findsOneWidget);
+        expect(find.text('EXP-2026-COH4-891'), findsOneWidget);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to ApplicationReviewStatusView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => ElevatedButton(
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Application Review');
+      expect(drawerItem, findsOneWidget);
+      expect(find.text('Your application is under review'), findsOneWidget);
+
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Your Application is Under Review'), findsOneWidget);
+      expect(find.text('APPLICATION STATUS'), findsOneWidget);
+      expect(find.text('EXP-2026-COH4-891'), findsOneWidget);
+    });
+
+    testWidgets('Interactive actions: Refresh status and FAQ expansion',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ApplicationReviewStatusView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final refreshButton = find.text('Refresh Review Status');
+      await tester.ensureVisible(refreshButton);
+      await tester.pumpAndSettle();
+      await tester.tap(refreshButton);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Application review status is up to date.'), findsOneWidget);
+    });
+  });
+
+  group('BuildExpertApprovedView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: BuildExpertApprovedView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text("You're Approved as a Build Expert!"), findsOneWidget);
+        expect(find.text('EXP-AUTH-2026-COH4'), findsOneWidget);
+        expect(find.text('ACCREDITATION CREDENTIAL'), findsOneWidget);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to BuildExpertApprovedView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => ElevatedButton(
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Expert Approved');
+      expect(drawerItem, findsOneWidget);
+      expect(find.text("You're approved as a Build Expert"), findsOneWidget);
+
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text("You're Approved as a Build Expert!"), findsOneWidget);
+      expect(find.text('EXP-AUTH-2026-COH4'), findsOneWidget);
+      expect(find.text('Launch Expert Studio'), findsOneWidget);
+    });
+
+    testWidgets('Interactive checklist toggle and agreement modal view',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: BuildExpertApprovedView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final checklistItem = find.text('Configure Creator Payouts (Stripe Connect)');
+      expect(checklistItem, findsOneWidget);
+      await tester.ensureVisible(checklistItem);
+      await tester.pumpAndSettle();
+      await tester.tap(checklistItem);
+      await tester.pumpAndSettle();
+
+      final agreementButton = find.text('View Creator Agreement & Royalties');
+      await tester.ensureVisible(agreementButton);
+      await tester.pumpAndSettle();
+      await tester.tap(agreementButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Creator Agreement & Terms'), findsOneWidget);
+      expect(find.text('70% Revenue Share'), findsOneWidget);
+    });
+  });
+
+  group('ProposeLabView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: ProposeLabView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Propose a New Lab'), findsOneWidget);
+        expect(find.text('EXPERT STUDIO · AUTHORING'), findsOneWidget);
+        expect(find.text('LAB PROPOSALS · COHORT 4'), findsOneWidget);
+        expect(find.text('5-Stage Workflow Curriculum'), findsOneWidget);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to ProposeLabView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => ElevatedButton(
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Propose Lab');
+      expect(drawerItem, findsOneWidget);
+      expect(find.text('Submit a new lab proposal'), findsOneWidget);
+
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Propose a New Lab'), findsOneWidget);
+      expect(find.text('Submit Lab Proposal'), findsOneWidget);
+    });
+
+    testWidgets('Submitting proposal form transitions to success confirmation card',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ProposeLabView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final submitBtn = find.text('Submit Lab Proposal');
+      expect(submitBtn, findsOneWidget);
+      await tester.ensureVisible(submitBtn);
+      await tester.pumpAndSettle();
+      await tester.tap(submitBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Lab Proposal Submitted!'), findsOneWidget);
+      expect(find.text('PROP-LAB-2026-904'), findsOneWidget);
+      expect(find.text('24 - 48 Hours'), findsOneWidget);
+    });
+  });
+
+  group('ProposalApprovalStatusView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: ProposalApprovalStatusView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Lab Proposal Under Review'), findsOneWidget);
+        expect(find.text('PROPOSAL REVIEW STATE'), findsOneWidget);
+        expect(find.text('PROP-LAB-2026-904'), findsOneWidget);
+        expect(find.text('Evaluation Pipeline'), findsOneWidget);
+        expect(find.text('Governance Scorecard'), findsOneWidget);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to ProposalApprovalStatusView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => ElevatedButton(
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Proposal Approval');
+      expect(drawerItem, findsOneWidget);
+      expect(find.text('Status screen — proposal review state'), findsOneWidget);
+
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Lab Proposal Under Review'), findsOneWidget);
+      expect(find.text('Inspect 5-Stage Proposal Artifact'), findsOneWidget);
+    });
+
+    testWidgets('Interactive stage switching and artifact modal inspection',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ProposalApprovalStatusView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Switch to Approved stage
+      final approvedTab = find.text('Approved');
+      expect(approvedTab, findsOneWidget);
+      await tester.tap(approvedTab);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Lab Proposal Approved & Ratified!'), findsOneWidget);
+      expect(find.text('Launch Lab in Sandbox'), findsOneWidget);
+
+      // Switch to Revisions stage
+      final revisionsTab = find.text('Revisions');
+      expect(revisionsTab, findsOneWidget);
+      await tester.tap(revisionsTab);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Revisions Requested'), findsOneWidget);
+      expect(find.text('Calibrate Stage 2 Payload'), findsOneWidget);
+
+      // Inspect full 5-stage proposal artifact
+      final inspectButton = find.text('Inspect 5-Stage Proposal Artifact');
+      await tester.ensureVisible(inspectButton);
+      await tester.pumpAndSettle();
+      await tester.tap(inspectButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Full Lab Proposal Artifact'), findsOneWidget);
+      expect(find.text('STAGE 01'), findsOneWidget);
+      expect(find.text('Build It — Multi-Agent Architecture'), findsOneWidget);
+    });
+  });
+
+  group('LabBuilderView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: LabBuilderView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('LAB BUILDER · AUTHORING ENGINE'), findsOneWidget);
+        expect(find.text('Stage Educational Objective'), findsOneWidget);
+        expect(find.text('Student Task & Instructions'), findsOneWidget);
+        expect(find.text('Publish Lab to Network'), findsOneWidget);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to LabBuilderView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => ElevatedButton(
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Lab Builder');
+      expect(drawerItem, findsOneWidget);
+      expect(find.text('Full editor to build lab content'), findsOneWidget);
+
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text('LAB BUILDER · AUTHORING ENGINE'), findsOneWidget);
+      expect(find.text('Publish Lab to Network'), findsOneWidget);
+    });
+
+    testWidgets('Interactive tab switching and stress-test suite execution',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: LabBuilderView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Switch to Code & Sandbox tab
+      final codeTab = find.text('Code & Sandbox');
+      expect(codeTab, findsOneWidget);
+      await tester.tap(codeTab);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sandbox Hardware Profile'), findsOneWidget);
+      expect(find.text('Runtime Pip Dependencies'), findsOneWidget);
+
+      // Switch to Canary Evals tab
+      final canaryTab = find.text('Canary Evals');
+      expect(canaryTab, findsOneWidget);
+      await tester.tap(canaryTab);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Live Sandbox Stress-Test Runner'), findsOneWidget);
+
+      // Run suite test
+      final runSuiteBtn = find.text('Run Suite');
+      expect(runSuiteBtn, findsOneWidget);
+      await tester.tap(runSuiteBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('ALL TESTS PASSED'), findsOneWidget);
+
+      // Tap Publish Lab to Network
+      final publishBtn = find.text('Publish Lab to Network');
+      await tester.ensureVisible(publishBtn);
+      await tester.pumpAndSettle();
+      await tester.tap(publishBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Publish Lab to Live Catalog'), findsOneWidget);
+      expect(find.text('Confirm & Publish to Network'), findsOneWidget);
+    });
+  });
+
+  group('LabPreviewView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: LabPreviewView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LabPreviewView), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to LabPreviewView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => Center(
+                child: ElevatedButton(
+                  onPressed: () => Scaffold.of(ctx).openDrawer(),
+                  child: const Text('Open Drawer'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open Drawer'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Lab Preview');
+      expect(drawerItem, findsOneWidget);
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LabPreviewView), findsOneWidget);
+      expect(find.text('Fine-Tuning Mistral 7B with QLoRA on Dual A100'),
+          findsOneWidget);
+    });
+
+    testWidgets(
+        'Interactive mode toggle, stage switching, and submission bottom-sheet',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: LabPreviewView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Verify initial Student Experience mode
+      expect(find.text('Student Experience View'), findsOneWidget);
+      expect(find.text('Stage 1: Build It'), findsWidgets);
+
+      // Toggle to Expert Inspector View
+      final expertTab = find.text('Expert Inspector View');
+      expect(expertTab, findsOneWidget);
+      await tester.tap(expertTab);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Hidden Canary Assertions (PyTest)'), findsOneWidget);
+      expect(find.text('CONFIDENTIAL EVAL'), findsOneWidget);
+
+      // Switch to Stage 2: Break It
+      final stage2 = find.text('Stage 2: Break It');
+      expect(stage2, findsOneWidget);
+      await tester.ensureVisible(stage2);
+      await tester.pumpAndSettle();
+      await tester.tap(stage2);
+      await tester.pumpAndSettle();
+
+      expect(find.text('STAGE 2 · ADVERSARIAL STRESS'), findsOneWidget);
+
+      // Tap Primary CTA: Submit Lab for Governance Review
+      final submitBtn = find.text('Submit Lab for Governance Review');
+      await tester.ensureVisible(submitBtn);
+      await tester.pumpAndSettle();
+      await tester.tap(submitBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Submit Lab for Governance'), findsOneWidget);
+      expect(find.text('Confirm & Submit for Review'), findsOneWidget);
+    });
+  });
+
+  group('SubmitRevisionView Responsiveness Tests', () {
+    for (final size in testViewports) {
+      testWidgets('Renders zero overflow at ${size.width}x${size.height}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: SubmitRevisionView(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SubmitRevisionView), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('CustomDrawer contains and navigates to SubmitRevisionView',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            drawer: const CustomDrawer(),
+            body: Builder(
+              builder: (ctx) => Center(
+                child: ElevatedButton(
+                  onPressed: () => Scaffold.of(ctx).openDrawer(),
+                  child: const Text('Open Drawer'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open Drawer'));
+      await tester.pumpAndSettle();
+
+      final drawerItem = find.text('Submit & Revision');
+      expect(drawerItem, findsOneWidget);
+      await tester.ensureVisible(drawerItem);
+      await tester.pumpAndSettle();
+
+      await tester.tap(drawerItem);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SubmitRevisionView), findsOneWidget);
+      expect(find.text('Submit & Revision'), findsWidgets);
+      expect(find.text('Submit lab + handle revision requests'), findsOneWidget);
+    });
+
+    testWidgets(
+        'Interactive revision item toggle and revision submission bottom-sheet',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: SubmitRevisionView(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Requested Revision Items'), findsOneWidget);
+      expect(find.text('2 / 3 RESOLVED'), findsOneWidget);
+
+      // Tap 3rd item actionTask to mark as resolved
+      final thirdItem = find.text(
+          'Add gradient checkpointing safeguard in Stage 2 starter code snippet');
+      expect(thirdItem, findsOneWidget);
+      await tester.ensureVisible(thirdItem);
+      await tester.pumpAndSettle();
+      await tester.tap(thirdItem);
+      await tester.pumpAndSettle();
+
+      expect(find.text('3 / 3 RESOLVED'), findsOneWidget);
+
+      // Tap Primary CTA: Submit Revised Lab for Review
+      final submitBtn = find.text('Submit Revised Lab for Review');
+      await tester.ensureVisible(submitBtn);
+      await tester.pumpAndSettle();
+      await tester.tap(submitBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Submit Revision v1.3'), findsOneWidget);
+      expect(find.text('Confirm & Send Revision to Board'), findsOneWidget);
+
+      // Confirm submission
+      final confirmBtn = find.text('Confirm & Send Revision to Board');
+      await tester.tap(confirmBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('RE-SUBMITTED · IN REVIEW'), findsOneWidget);
     });
   });
 }

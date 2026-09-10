@@ -205,50 +205,73 @@ class _LabsViewState extends State<LabsView> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 40.0,
-              height: 40.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 20.0,
-                  ),
-                  Positioned(
-                    top: 9.0,
-                    right: 9.0,
-                    child: Container(
-                      width: 7.0,
-                      height: 7.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All active lab track notifications caught up.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                ],
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.deepInk,
+                      size: 20.0,
+                    ),
+                    Positioned(
+                      top: 9.0,
+                      right: 9.0,
+                      child: Container(
+                        width: 7.0,
+                        height: 7.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 10.0),
-            Container(
-              width: 40.0,
-              height: 40.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: const Icon(
-                Icons.search_rounded,
-                color: AppColors.deepInk,
-                size: 20.0,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LabDetailView()),
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: const Icon(
+                  Icons.search_rounded,
+                  color: AppColors.deepInk,
+                  size: 20.0,
+                ),
               ),
             ),
           ],
@@ -298,17 +321,17 @@ class _LabsViewState extends State<LabsView> {
                   Text(
                     item['day']!,
                     style: TextStyle(
-                      color: isSelected ? AppColors.deepInk : const Color(0xFF8E8D88),
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w600,
+                      color: isSelected ? AppColors.deepInk : AppColors.roomCardSubtext,
+                      fontSize: 12.0,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 3.0),
+                  const SizedBox(height: 4.0),
                   Text(
                     item['date']!,
-                    style: const TextStyle(
-                      color: AppColors.deepInk,
-                      fontSize: 14.5,
+                    style: TextStyle(
+                      color: isSelected ? AppColors.deepInk : AppColors.deepInk.withValues(alpha: 0.6),
+                      fontSize: 15.0,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -396,56 +419,63 @@ class _LabsViewState extends State<LabsView> {
             itemBuilder: (context, index) {
               final card = _domainCards[index];
 
-              return Container(
-                width: 175.0,
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  color: card['bgColor'] as Color,
-                  borderRadius: BorderRadius.circular(28.0),
-                  boxShadow: AppColors.softShadow,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: 44.0,
-                      height: 44.0,
-                      decoration: BoxDecoration(
-                        color: AppColors.pureWhite,
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Icon(
-                        card['icon'] as IconData,
-                        color: AppColors.deepInk,
-                        size: 22.0,
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          card['title'] as String,
-                          style: const TextStyle(
-                            color: AppColors.deepInk,
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25,
-                          ),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LabDetailView()),
+                  );
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: 175.0,
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: card['bgColor'] as Color,
+                    borderRadius: BorderRadius.circular(28.0),
+                    boxShadow: AppColors.softShadow,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 44.0,
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: AppColors.pureWhite,
+                          borderRadius: BorderRadius.circular(16.0),
                         ),
-                        const SizedBox(height: 6.0),
-                        Text(
-                          card['amount'] as String,
-                          style: const TextStyle(
-                            color: AppColors.deepInk,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5,
-                          ),
+                        child: Icon(
+                          card['icon'] as IconData,
+                          color: AppColors.deepInk,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            card['title'] as String,
+                            style: const TextStyle(
+                              color: AppColors.deepInk,
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w800,
+                              height: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          Text(
+                            card['amount'] as String,
+                            style: TextStyle(
+                              color: AppColors.deepInk.withValues(alpha: 0.60),
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -457,15 +487,15 @@ class _LabsViewState extends State<LabsView> {
               onTap: _scrollCardsForward,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                width: 52.0,
-                height: 52.0,
+                width: 38.0,
+                height: 38.0,
                 decoration: BoxDecoration(
                   color: AppColors.pureWhite,
                   shape: BoxShape.circle,
                   boxShadow: AppColors.softShadow,
                 ),
                 child: const Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.arrow_forward_rounded,
                   color: AppColors.deepInk,
                   size: 18.0,
                 ),

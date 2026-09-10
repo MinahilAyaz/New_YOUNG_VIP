@@ -7,6 +7,12 @@ import '../data/models/expert_studio_model.dart';
 import '../viewmodels/expert_studio_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
+import 'lab_builder_view.dart';
+import 'lab_preview_view.dart';
+import 'profile_view.dart';
+import 'proposal_approval_status_view.dart';
+import 'propose_lab_view.dart';
+import 'submit_revision_view.dart';
 
 class ExpertStudioView extends StatelessWidget {
   final bool isRootTab;
@@ -57,7 +63,7 @@ class ExpertStudioView extends StatelessWidget {
                           const SizedBox(height: 22.0),
                           _buildSectionHeader('My Authored Labs (${studioData.authoredLabs.length})'),
                           const SizedBox(height: 12.0),
-                          _buildAuthoredLabsList(studioData.authoredLabs),
+                          _buildAuthoredLabsList(context, studioData.authoredLabs),
                           const SizedBox(height: 16.0),
                           _buildActionPill(context, studioData.buttonLabel),
                           const SizedBox(height: 88.0),
@@ -135,53 +141,76 @@ class ExpertStudioView extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
-                  ),
-                  Positioned(
-                    top: 7.0,
-                    right: 8.0,
-                    child: Container(
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All creator studio telemetry & proposal alerts are up to date.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                ],
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
+                    ),
+                    Positioned(
+                      top: 7.0,
+                      right: 8.0,
+                      child: Container(
+                        width: 6.0,
+                        height: 6.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 8.0),
-            Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: AppColors.avatarBg,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: AppColors.buttonShadow,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'AV',
-                style: TextStyle(
-                  color: AppColors.avatarText,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: AppColors.avatarBg,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'AV',
+                  style: TextStyle(
+                    color: AppColors.avatarText,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -344,6 +373,7 @@ class ExpertStudioView extends StatelessWidget {
         'icon': Icons.edit_note_rounded,
         'color': AppColors.pastelLavender,
         'textColor': AppColors.pastelLavenderText,
+        'route': const LabBuilderView(),
       },
       {
         'title': 'Stress-Test Suite',
@@ -351,6 +381,7 @@ class ExpertStudioView extends StatelessWidget {
         'icon': Icons.biotech_rounded,
         'color': AppColors.pastelSage,
         'textColor': AppColors.pastelSageText,
+        'route': const LabPreviewView(),
       },
       {
         'title': 'Builder Analytics',
@@ -358,6 +389,7 @@ class ExpertStudioView extends StatelessWidget {
         'icon': Icons.insights_rounded,
         'color': AppColors.pastelCoral,
         'textColor': AppColors.pastelCoralText,
+        'route': const ProposalApprovalStatusView(),
       },
       {
         'title': 'Peer Reviews',
@@ -365,6 +397,7 @@ class ExpertStudioView extends StatelessWidget {
         'icon': Icons.people_alt_rounded,
         'color': AppColors.pastelSand,
         'textColor': AppColors.pastelSandText,
+        'route': const SubmitRevisionView(),
       },
     ];
 
@@ -376,65 +409,74 @@ class ExpertStudioView extends StatelessWidget {
       crossAxisSpacing: 10.0,
       childAspectRatio: 1.35,
       children: tools.map((tool) {
-        return Container(
-          decoration: BoxDecoration(
-            color: tool['color'] as Color,
-            borderRadius: BorderRadius.circular(20.0),
-            boxShadow: AppColors.buttonShadow,
-          ),
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 32.0,
-                height: 32.0,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  tool['icon'] as IconData,
-                  size: 18.0,
-                  color: tool['textColor'] as Color,
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tool['title'] as String,
-                    style: const TextStyle(
-                      color: AppColors.deepInk,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => tool['route'] as Widget),
+            );
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            decoration: BoxDecoration(
+              color: tool['color'] as Color,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: AppColors.buttonShadow,
+            ),
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 32.0,
+                  height: 32.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  const SizedBox(height: 2.0),
-                  Text(
-                    tool['subtitle'] as String,
-                    style: TextStyle(
-                      color: (tool['textColor'] as Color).withValues(alpha: 0.85),
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    tool['icon'] as IconData,
+                    size: 18.0,
+                    color: tool['textColor'] as Color,
                   ),
-                ],
-              ),
-            ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tool['title'] as String,
+                      style: const TextStyle(
+                        color: AppColors.deepInk,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2.0),
+                    Text(
+                      tool['subtitle'] as String,
+                      style: TextStyle(
+                        color: (tool['textColor'] as Color).withValues(alpha: 0.85),
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       }).toList(),
     );
   }
 
-  Widget _buildAuthoredLabsList(List<AuthoredLabModel> labs) {
+  Widget _buildAuthoredLabsList(BuildContext context, List<AuthoredLabModel> labs) {
     return Column(
       children: labs.map((lab) {
         return Padding(
@@ -524,22 +566,31 @@ class ExpertStudioView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14.0,
-                    vertical: 7.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.alabaster,
-                    borderRadius: BorderRadius.circular(20.0),
-                    boxShadow: AppColors.buttonShadow,
-                  ),
-                  child: const Text(
-                    'Edit →',
-                    style: TextStyle(
-                      color: AppColors.deepInk,
-                      fontSize: 11.0,
-                      fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LabBuilderView()),
+                    );
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14.0,
+                      vertical: 7.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.alabaster,
+                      borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: AppColors.buttonShadow,
+                    ),
+                    child: const Text(
+                      'Edit →',
+                      style: TextStyle(
+                        color: AppColors.deepInk,
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -553,36 +604,45 @@ class ExpertStudioView extends StatelessWidget {
 
   Widget _buildActionPill(BuildContext context, String buttonLabel) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 22.0,
-          vertical: 8.0,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.deepInk,
-          borderRadius: BorderRadius.circular(24.0),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.deepInk.withValues(alpha: 0.15),
-              blurRadius: 16.0,
-              offset: const Offset(0, 4.0),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.open_in_browser_rounded, color: AppColors.pureWhite, size: 16.0),
-            const SizedBox(width: 6.0),
-            Text(
-              buttonLabel,
-              style: const TextStyle(
-                color: AppColors.pureWhite,
-                fontSize: 12.5,
-                fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ProposeLabView()),
+          );
+        },
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 22.0,
+            vertical: 8.0,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.deepInk,
+            borderRadius: BorderRadius.circular(24.0),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.deepInk.withValues(alpha: 0.15),
+                blurRadius: 16.0,
+                offset: const Offset(0, 4.0),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.open_in_browser_rounded, color: AppColors.pureWhite, size: 16.0),
+              const SizedBox(width: 6.0),
+              Text(
+                buttonLabel,
+                style: const TextStyle(
+                  color: AppColors.pureWhite,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
