@@ -43,3 +43,58 @@ class BreakItStageModel {
     required this.contentBlocks,
   });
 }
+
+class BuildItStageModel {
+  final String stageTitle;
+  final String labTagLabel;
+  final String objective;
+  final List<StageStepModel> steps;
+  final List<ContentBlockModel> contentBlocks;
+
+  const BuildItStageModel({
+    required this.stageTitle,
+    required this.labTagLabel,
+    required this.objective,
+    required this.steps,
+    required this.contentBlocks,
+  });
+}
+
+class UnderstandItStageModel {
+  final String stageTitle;
+  final String labTagLabel;
+  final String objective;
+  final String rootCauseSummary;
+  final List<StageStepModel> steps;
+  final List<ContentBlockModel> contentBlocks;
+
+  const UnderstandItStageModel({
+    required this.stageTitle,
+    required this.labTagLabel,
+    required this.objective,
+    required this.rootCauseSummary,
+    required this.steps,
+    required this.contentBlocks,
+  });
+}
+
+class AdviseBetterStageModel {
+  final String stageTitle;
+  final String labTagLabel;
+  final String objective;
+  final String advisorySummary;
+  final List<StageStepModel> steps;
+  final List<ContentBlockModel> contentBlocks;
+
+  const AdviseBetterStageModel({
+    required this.stageTitle,
+    required this.labTagLabel,
+    required this.objective,
+    required this.advisorySummary,
+    required this.steps,
+    required this.contentBlocks,
+  });
+}
+
+
+

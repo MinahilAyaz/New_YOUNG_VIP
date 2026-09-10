@@ -6,6 +6,7 @@ import '../data/models/peer_builder_model.dart';
 import '../viewmodels/peers_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
+import '../widgets/young_vip_wordmark.dart';
 import 'messages_view.dart';
 import 'profile_view.dart';
 
@@ -51,7 +52,7 @@ class PeersView extends StatelessWidget {
                           _buildHeading(),
                           const SizedBox(height: 18.0),
                           _buildPeersList(context, peersData.peers),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -83,15 +84,12 @@ class PeersView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 34.0,
-                  height: 34.0,
+                  width: 38.0,
+                  height: 38.0,
                   decoration: BoxDecoration(
                     color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
-                    ),
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: AppColors.buttonShadow,
                   ),
                   child: const Icon(
                     Icons.menu_rounded,
@@ -100,30 +98,7 @@ class PeersView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                const YoungVipWordmark(),
               ],
             ),
           ),
@@ -132,15 +107,12 @@ class PeersView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -167,11 +139,12 @@ class PeersView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -231,11 +204,8 @@ class PeersView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -299,11 +269,12 @@ class PeersView extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14.0,
-                          vertical: 6.0,
+                          vertical: 7.0,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.roomCardBg,
+                          color: AppColors.alabaster,
                           borderRadius: BorderRadius.circular(20.0),
+                          boxShadow: AppColors.buttonShadow,
                         ),
                         child: const Text(
                           'Profile',
@@ -329,11 +300,12 @@ class PeersView extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14.0,
-                          vertical: 6.0,
+                          vertical: 7.0,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.deepInk,
                           borderRadius: BorderRadius.circular(20.0),
+                          boxShadow: AppColors.buttonShadow,
                         ),
                         child: const Text(
                           'Connect →',

@@ -5,6 +5,8 @@ import '../core/theme/app_colors.dart';
 import '../data/models/lab_detail_model.dart';
 import '../viewmodels/lab_detail_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/custom_drawer.dart';
+import '../widgets/young_vip_wordmark.dart';
 import 'break_it_view.dart';
 
 class LabDetailView extends StatelessWidget {
@@ -21,6 +23,7 @@ class LabDetailView extends StatelessWidget {
       create: (_) => LabDetailViewModel(),
       child: Scaffold(
         backgroundColor: AppColors.warmIvory,
+        drawer: const CustomDrawer(),
         body: Consumer<LabDetailViewModel>(
           builder: (context, viewModel, _) {
             final double screenWidth = MediaQuery.of(context).size.width;
@@ -50,7 +53,7 @@ class LabDetailView extends StatelessWidget {
                           _buildStageGrid(detail.stages),
                           const SizedBox(height: 20.0),
                           _buildSummaryCard(context, detail),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -74,22 +77,19 @@ class LabDetailView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: () => Navigator.maybePop(context),
-          behavior: HitTestBehavior.opaque,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 34.0,
-                height: 34.0,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.maybePop(context),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
                 decoration: BoxDecoration(
                   color: AppColors.pureWhite,
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(
-                    color: const Color(0xFFEDE7F2),
-                    width: 1.0,
-                  ),
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
                 ),
                 child: const Icon(
                   Icons.arrow_back_rounded,
@@ -97,47 +97,42 @@ class LabDetailView extends StatelessWidget {
                   size: 18.0,
                 ),
               ),
-              const SizedBox(width: 10.0),
-              RichText(
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'YOUNG ',
-                      style: TextStyle(
-                        color: AppColors.deepInk,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'VIP',
-                      style: TextStyle(
-                        color: AppColors.mutedPurple,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
+            ),
+            const SizedBox(width: 8.0),
+            Builder(
+              builder: (ctx) => GestureDetector(
+                onTap: () => Scaffold.of(ctx).openDrawer(),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: 38.0,
+                  height: 38.0,
+                  decoration: BoxDecoration(
+                    color: AppColors.pureWhite,
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: AppColors.buttonShadow,
+                  ),
+                  child: const Icon(
+                    Icons.menu_rounded,
+                    color: AppColors.deepInk,
+                    size: 18.0,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 10.0),
+            const YoungVipWordmark(),
+          ],
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -164,11 +159,12 @@ class LabDetailView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -268,7 +264,8 @@ class LabDetailView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: stage.backgroundColor,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: AppColors.buttonShadow,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18.0),
       child: Row(
@@ -298,7 +295,8 @@ class LabDetailView extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.pastelSage,
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(24.0),
+        boxShadow: AppColors.softShadow,
       ),
       padding: const EdgeInsets.all(18.0),
       child: Column(

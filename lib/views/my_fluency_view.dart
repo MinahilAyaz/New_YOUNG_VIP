@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/young_vip_wordmark.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
@@ -6,6 +7,7 @@ import '../data/models/my_fluency_model.dart';
 import '../viewmodels/my_fluency_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
+import 'assessment_result_view.dart';
 
 class MyFluencyView extends StatelessWidget {
   final bool isRootTab;
@@ -48,7 +50,7 @@ class MyFluencyView extends StatelessWidget {
                           const SizedBox(height: 18.0),
                           _buildHeading(),
                           const SizedBox(height: 18.0),
-                          _buildHeroLevelCard(fluencyData),
+                          _buildHeroLevelCard(context, fluencyData),
                           const SizedBox(height: 22.0),
                           _buildSectionHeader('Competency Domains (${fluencyData.skills.length})'),
                           const SizedBox(height: 12.0),
@@ -57,7 +59,7 @@ class MyFluencyView extends StatelessWidget {
                           _buildSectionHeader('Verified Credentials'),
                           const SizedBox(height: 12.0),
                           _buildCertificateCard(context),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -81,72 +83,51 @@ class MyFluencyView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () => Scaffold.of(ctx).openDrawer(),
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 34.0,
-                  height: 34.0,
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
+        Expanded(
+          child: Builder(
+            builder: (ctx) => GestureDetector(
+              onTap: () => Scaffold.of(ctx).openDrawer(),
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 38.0,
+                    height: 38.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.pureWhite,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: AppColors.buttonShadow,
+                    ),
+                    child: const Icon(
+                      Icons.menu_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.menu_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
+                  const SizedBox(width: 10.0),
+                  const Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: YoungVipWordmark(),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+        const SizedBox(width: 8.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -173,11 +154,12 @@ class MyFluencyView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -222,93 +204,152 @@ class MyFluencyView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroLevelCard(MyFluencyModel fluencyData) {
+  Widget _buildHeroLevelCard(
+      BuildContext context, MyFluencyModel fluencyData) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.heroCardPurple,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.heroCardPurple.withValues(alpha: 0.25),
-            blurRadius: 18.0,
-            offset: const Offset(0, 6.0),
-          ),
-        ],
+        color: AppColors.pureWhite,
+        borderRadius: BorderRadius.circular(26.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(18.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 3.5,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF857A9D),
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.military_tech_rounded,
-                      color: Colors.white,
-                      size: 13.0,
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 4.0,
                     ),
-                    SizedBox(width: 3.0),
-                    Text(
-                      'VIP FLUENCY TIER',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.8,
-                      ),
+                    decoration: BoxDecoration(
+                      color: AppColors.pastelLilac,
+                      borderRadius: BorderRadius.circular(14.0),
                     ),
-                  ],
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.military_tech_rounded,
+                          color: AppColors.deepInk,
+                          size: 13.0,
+                        ),
+                        SizedBox(width: 3.0),
+                        Text(
+                          'VIP FLUENCY TIER',
+                          style: TextStyle(
+                            color: AppColors.deepInk,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(width: 8.0),
               const Text(
                 '84% Overall',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.deepInk,
                   fontSize: 12.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12.0),
+          const SizedBox(height: 14.0),
           Text(
             fluencyData.levelTitle,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.deepInk,
               fontSize: 19.0,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 10.0),
           ClipRRect(
             borderRadius: BorderRadius.circular(4.0),
             child: const LinearProgressIndicator(
               value: 0.84,
               minHeight: 6.0,
-              backgroundColor: Color(0xFF857A9D),
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
+              backgroundColor: Color(0x33D49B85),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.deepInk),
             ),
           ),
           const SizedBox(height: 8.0),
           Text(
             fluencyData.levelSubtitle,
             style: const TextStyle(
-              color: AppColors.heroCardSubtext,
-              fontSize: 11.0,
+              color: AppColors.roomCardSubtext,
+              fontSize: 11.5,
               fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 14.0),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => const AssessmentResultView()),
+              );
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0, vertical: 8.0),
+              decoration: BoxDecoration(
+                color: AppColors.bananiLavender,
+                borderRadius: BorderRadius.circular(12.0),
+                border: Border.all(
+                  color: AppColors.royalIndigo.withValues(alpha: 0.2),
+                ),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.assessment_outlined,
+                          size: 16.0,
+                          color: AppColors.royalIndigo,
+                        ),
+                        SizedBox(width: 8.0),
+                        Expanded(
+                          child: Text(
+                            'View Benchmark Assessment Result (91%)',
+                            style: TextStyle(
+                              color: AppColors.royalIndigo,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 6.0),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 12.0,
+                    color: AppColors.royalIndigo,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -343,13 +384,10 @@ class MyFluencyView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(14.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -357,11 +395,11 @@ class MyFluencyView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 40.0,
-                height: 40.0,
+                width: 44.0,
+                height: 44.0,
                 decoration: BoxDecoration(
                   color: skill.bgColor,
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(14.0),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -434,7 +472,7 @@ class MyFluencyView extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: skill.progress,
                     minHeight: 5.5,
-                    backgroundColor: const Color(0xFFF1EDF5),
+                    backgroundColor: AppColors.roomCardBg,
                     valueColor: AlwaysStoppedAnimation<Color>(skill.textColor),
                   ),
                 ),
@@ -459,13 +497,10 @@ class MyFluencyView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(14.0),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -474,7 +509,7 @@ class MyFluencyView extends StatelessWidget {
             height: 44.0,
             decoration: BoxDecoration(
               color: AppColors.pastelSand,
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(14.0),
             ),
             alignment: Alignment.center,
             child: const Icon(
@@ -515,12 +550,13 @@ class MyFluencyView extends StatelessWidget {
           const SizedBox(width: 8.0),
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 12.0,
-              vertical: 6.0,
+              horizontal: 14.0,
+              vertical: 7.0,
             ),
             decoration: BoxDecoration(
-              color: AppColors.roomCardBg,
+              color: AppColors.alabaster,
               borderRadius: BorderRadius.circular(20.0),
+              boxShadow: AppColors.buttonShadow,
             ),
             child: const Text(
               'View →',

@@ -6,6 +6,7 @@ import '../data/models/lab_room_model.dart';
 import '../viewmodels/lab_room_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
+import '../widgets/young_vip_wordmark.dart';
 
 class LabRoomView extends StatelessWidget {
   final bool isRootTab;
@@ -55,7 +56,7 @@ class LabRoomView extends StatelessWidget {
                           _buildPostList(roomData.posts),
                           const SizedBox(height: 16.0),
                           _buildPostActionPill(context),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -79,72 +80,51 @@ class LabRoomView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () => Scaffold.of(ctx).openDrawer(),
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 34.0,
-                  height: 34.0,
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
+        Expanded(
+          child: Builder(
+            builder: (ctx) => GestureDetector(
+              onTap: () => Scaffold.of(ctx).openDrawer(),
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 38.0,
+                    height: 38.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.pureWhite,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: AppColors.buttonShadow,
+                    ),
+                    child: const Icon(
+                      Icons.menu_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.menu_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
+                  const SizedBox(width: 10.0),
+                  const Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: YoungVipWordmark(),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+        const SizedBox(width: 8.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -171,11 +151,12 @@ class LabRoomView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -256,14 +237,11 @@ class LabRoomView extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -271,43 +249,52 @@ class LabRoomView extends StatelessWidget {
           final isSelected = viewModel.selectedDayIndex == index;
           final item = days[index];
 
-          return GestureDetector(
-            onTap: () => viewModel.selectDay(index),
-            behavior: HitTestBehavior.opaque,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(
-                horizontal: isSelected ? 10.0 : 8.0,
-                vertical: 6.0,
-              ),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.deepInk : Colors.transparent,
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    item['day']!,
-                    style: TextStyle(
-                      color: isSelected
-                          ? AppColors.pureWhite.withValues(alpha: 0.8)
-                          : AppColors.roomCardSubtext,
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w500,
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => viewModel.selectDay(index),
+              behavior: HitTestBehavior.opaque,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6.0,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.deepInk : Colors.transparent,
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        item['day']!,
+                        style: TextStyle(
+                          color: isSelected
+                              ? AppColors.pureWhite.withValues(alpha: 0.8)
+                              : AppColors.roomCardSubtext,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 3.0),
-                  Text(
-                    item['date']!,
-                    style: TextStyle(
-                      color: isSelected
-                          ? AppColors.pureWhite
-                          : AppColors.deepInk,
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 3.0),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        item['date']!,
+                        style: TextStyle(
+                          color: isSelected
+                              ? AppColors.pureWhite
+                              : AppColors.deepInk,
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -344,11 +331,8 @@ class LabRoomView extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
       padding: const EdgeInsets.all(16.0),
       child: Column(

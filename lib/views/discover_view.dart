@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../core/navigation/tab_navigation_service.dart';
 import '../core/theme/app_colors.dart';
-import '../data/models/discover_category_model.dart';
-import '../viewmodels/discover_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/custom_card.dart';
 import '../widgets/custom_drawer.dart';
-import '../widgets/custom_text_field.dart';
+import '../widgets/yv_header.dart';
+import '../widgets/yv_lab_row.dart';
+import '../widgets/yv_room_post.dart';
+import 'advise_better_view.dart';
+import 'break_it_view.dart';
+import 'build_it_view.dart';
+import 'lab_room_view.dart';
+import 'premium_locked_gate_view.dart';
+import 'understand_it_view.dart';
 
-class DiscoverView extends StatelessWidget {
+class DiscoverView extends StatefulWidget {
   final bool isRootTab;
 
   const DiscoverView({
@@ -18,120 +23,492 @@ class DiscoverView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<DiscoverViewModel>(
-      create: (_) => DiscoverViewModel(),
-      child: Scaffold(
-        backgroundColor: AppColors.warmIvory,
-        drawer: const CustomDrawer(),
-        body: Consumer<DiscoverViewModel>(
-          builder: (context, viewModel, _) {
-            final double screenWidth = MediaQuery.of(context).size.width;
-            final double horizontalPadding =
-                screenWidth > 600 ? 24.0 : screenWidth * 0.055;
+  State<DiscoverView> createState() => _DiscoverViewState();
+}
 
-            return SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 540.0),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding,
-                      vertical: 12.0,
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildTopBar(context),
-                          const SizedBox(height: 18.0),
-                          _buildHeading(),
-                          const SizedBox(height: 16.0),
-                          _buildSearchField(viewModel),
-                          const SizedBox(height: 18.0),
-                          _buildPromoBanner(context),
-                          const SizedBox(height: 18.0),
-                          _buildSectionHeader('Explore Domains', onSeeAll: () {
-                            TabNavigationService.switchToTab(context, 1);
-                          }),
-                          const SizedBox(height: 12.0),
-                          _buildCategoryGrid(context, viewModel),
-                          const SizedBox(height: 18.0),
-                          _buildSectionHeader('Live Peer Rooms', onSeeAll: () {
-                            TabNavigationService.switchToTab(context, 2);
-                          }),
-                          const SizedBox(height: 12.0),
-                          _buildCurrentRoomCard(context, viewModel),
-                          const SizedBox(height: 16.0),
-                        ],
+class _DiscoverViewState extends State<DiscoverView> {
+  final TextEditingController _searchController = TextEditingController();
+  final Set<String> _connectedUsers = {};
+  String? _selectedTopic;
+
+  final List<String> _topicPills = [
+    'Cybersecurity',
+    'Automation',
+    'Privacy & Data Flows',
+    'Digital Identity',
+  ];
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _toggleConnect(String userName) {
+    setState(() {
+      if (_connectedUsers.contains(userName)) {
+        _connectedUsers.remove(userName);
+      } else {
+        _connectedUsers.add(userName);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double horizontalPadding =
+        screenWidth > 600 ? 24.0 : screenWidth * 0.055;
+
+    return Scaffold(
+      backgroundColor: AppColors.bananiBackground,
+      drawer: const CustomDrawer(),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 540.0),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: 12.0,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. Header (YVHeader matching @components/YVHeader.jsx)
+                    Builder(
+                      builder: (ctx) => YVHeader(
+                        onOpenDrawer: () => Scaffold.of(ctx).openDrawer(),
+                        onNotificationTap: () => _showNotificationSheet(context),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 18.0),
+
+                    // 2. Hero & Search Section
+                    _buildHeroSection(context),
+                    const SizedBox(height: 28.0),
+
+                    // 3. Continue Lab Card (Dark obsidian card with 4-stage progress)
+                    _buildContinueLabSection(context),
+                    const SizedBox(height: 32.0),
+
+                    // 4. Recommended Labs (Featured Big Card + 2 Lab Rows)
+                    _buildRecommendedLabsSection(context),
+                    const SizedBox(height: 32.0),
+
+                    // 5. Explore Technology (2x2 Grid + Filter Chips)
+                    _buildExploreTechnologySection(context),
+                    const SizedBox(height: 32.0),
+
+                    // 6. Who else is building this? (Overlapping avatars + Connect rows)
+                    _buildPeersSection(context),
+                    const SizedBox(height: 32.0),
+
+                    // 7. Lab Room Activity (Posts + All Access Membership Banner)
+                    _buildLabRoomActivitySection(context),
+                    const SizedBox(height: 88.0), // Spacing for floating dock
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
-        bottomNavigationBar: isRootTab
-            ? null
-            : const CustomBottomNavBar(
-                currentIndex: 0,
-              ),
       ),
+      bottomNavigationBar: widget.isRootTab
+          ? null
+          : const CustomBottomNavBar(
+              currentIndex: 0,
+            ),
     );
   }
 
-  Widget _buildTopBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
+  // ==========================================
+  // 2. HERO & SEARCH SECTION
+  // ==========================================
+  Widget _buildHeroSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () => Scaffold.of(ctx).openDrawer(),
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 34.0,
-                  height: 34.0,
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.menu_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
+        // Subtitle badge with gold bar
+        Row(
+          children: [
+            Container(
+              width: 36.0,
+              height: 2.0,
+              decoration: BoxDecoration(
+                color: AppColors.bananiAccent,
+                borderRadius: BorderRadius.circular(2.0),
+              ),
+            ),
+            const SizedBox(width: 10.0),
+            const Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'THE TECHNOLOGY LAB FOR LAWYERS',
+                  style: TextStyle(
+                    color: AppColors.bananiSlate,
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.5,
                   ),
                 ),
-                const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14.0),
+
+        // Hero Title
+        const Text(
+          'What do you want to understand today?',
+          style: TextStyle(
+            color: AppColors.bananiInk,
+            fontSize: 32.0,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.6,
+            height: 1.1,
+          ),
+        ),
+        const SizedBox(height: 10.0),
+
+        // Hero Tagline
+        const Text(
+          'Build it. Break it. Understand it. Advise better.',
+          style: TextStyle(
+            color: AppColors.bananiSlate,
+            fontSize: 15.5,
+            fontWeight: FontWeight.w400,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 18.0),
+
+        // Search Bar Card
+        CustomCard(
+          backgroundColor: AppColors.bananiCard,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: AppColors.bananiBorder,
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.bananiInk.withValues(alpha: 0.07),
+              blurRadius: 32.0,
+              offset: const Offset(0, 12.0),
+              spreadRadius: 0,
+            ),
+          ],
+          padding: const EdgeInsets.fromLTRB(14.0, 6.0, 8.0, 6.0),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.search_rounded,
+                color: AppColors.bananiSlate,
+                size: 20.0,
+              ),
+              const SizedBox(width: 10.0),
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  style: const TextStyle(
+                    color: AppColors.bananiInk,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: 'Search Labs, technologies, topics…',
+                    hintStyle: TextStyle(
+                      color: AppColors.bananiSlate,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 8.0),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  TabNavigationService.switchToTab(context, 1); // Switch to Labs
+                },
+                child: Container(
+                  height: 40.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.bananiLavender,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'Search',
+                    style: TextStyle(
+                      color: AppColors.bananiPrimary,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ==========================================
+  // 3. CONTINUE LAB SECTION (Dark Obsidian Card)
+  // ==========================================
+  Widget _buildContinueLabSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const Expanded(
+              child: Text(
+                'Continue Lab',
+                style: TextStyle(
+                  color: AppColors.bananiInk,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            GestureDetector(
+              onTap: () {
+                TabNavigationService.switchToTab(context, 1);
+              },
+              child: const Text(
+                'All activity',
+                style: TextStyle(
+                  color: AppColors.bananiPrimary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14.0),
+
+        // Dark Ink Card with Ambient Deco
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppColors.bananiInk,
+            ),
+            child: Stack(
+              children: [
+                // Ambient Glow Circle
+                Positioned(
+                  top: -40.0,
+                  right: -40.0,
+                  child: Container(
+                    width: 176.0,
+                    height: 176.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.bananiPrimary.withValues(alpha: 0.25),
+                    ),
+                  ),
+                ),
+                // Amber accent vertical line
+                Positioned(
+                  top: 36.0,
+                  right: 32.0,
+                  child: Container(
+                    width: 1.5,
+                    height: 64.0,
+                    color: AppColors.bananiAccent.withValues(alpha: 0.7),
+                  ),
+                ),
+
+                // Card Content
+                Padding(
+                  padding: const EdgeInsets.all(22.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextSpan(
-                        text: 'YOUNG ',
+                      // Badge Row: "02 · BREAK IT" + Category
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8.0,
+                        runSpacing: 4.0,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0,
+                              vertical: 5.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: const Text(
+                              '02 · BREAK IT',
+                              style: TextStyle(
+                                color: AppColors.bananiCoral,
+                                fontSize: 11.0,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'RAG / Knowledge',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.65),
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12.0),
+
+                      // Lab Title
+                      const Text(
+                        'Hallucinations on Record',
                         style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
+                          color: Colors.white,
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.3,
+                          height: 1.2,
                         ),
                       ),
-                      TextSpan(
-                        text: 'VIP',
+                      const SizedBox(height: 8.0),
+
+                      // Lab Subtitle / Instruction
+                      Text(
+                        'You built the pipeline. Now remove the source filter and watch it confidently fail.',
                         style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w400,
+                          height: 1.45,
+                        ),
+                      ),
+                      const SizedBox(height: 18.0),
+
+                      // 4-Bar Segmented Progress Indicator
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 5.5,
+                              decoration: BoxDecoration(
+                                color: AppColors.bananiSuccess,
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6.0),
+                          Expanded(
+                            child: Container(
+                              height: 5.5,
+                              decoration: BoxDecoration(
+                                color: AppColors.bananiCoral,
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6.0),
+                          Expanded(
+                            child: Container(
+                              height: 5.5,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6.0),
+                          Expanded(
+                            child: Container(
+                              height: 5.5,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+
+                      // Progress Label & Percentage
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Build done · Break in progress',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.55),
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8.0),
+                          const Text(
+                            '48%',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20.0),
+
+                      // Continue Lab Action Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48.0,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const BreakItView(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.bananiPrimary,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          child: const Text(
+                            'Continue Lab',
+                            style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -141,221 +518,915 @@ class DiscoverView extends StatelessWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  // ==========================================
+  // 4. RECOMMENDED LABS (Featured + Rows)
+  // ==========================================
+  Widget _buildRecommendedLabsSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
+            const Expanded(
+              child: Text(
+                'Recommended Labs',
+                style: TextStyle(
+                  color: AppColors.bananiInk,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
                 ),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
-                  ),
-                  Positioned(
-                    top: 7.0,
-                    right: 8.0,
-                    child: Container(
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ),
             const SizedBox(width: 8.0),
-            Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
-                color: AppColors.avatarBg,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
+            GestureDetector(
+              onTap: () {
+                TabNavigationService.switchToTab(context, 1);
+              },
               child: const Text(
-                'AV',
+                'View all',
                 style: TextStyle(
-                  color: AppColors.avatarText,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
+                  color: AppColors.bananiPrimary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildHeading() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Text(
-          'What do you want to\nunderstand?',
+        const SizedBox(height: 4.0),
+        const Text(
+          'Hands-on experiences, not lectures. Pick one and start building.',
           style: TextStyle(
-            color: AppColors.deepInk,
-            fontSize: 24.0,
-            fontWeight: FontWeight.w800,
-            height: 1.25,
-            letterSpacing: -0.3,
+            color: AppColors.bananiSlate,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w400,
+            height: 1.4,
           ),
         ),
-        SizedBox(height: 4.0),
-        Text(
-          'Explore live interactive labs & builder workflows',
-          style: TextStyle(
-            color: AppColors.roomCardSubtext,
-            fontSize: 12.5,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
+        const SizedBox(height: 16.0),
 
-  Widget _buildSearchField(DiscoverViewModel viewModel) {
-    final controller = TextEditingController(text: viewModel.searchQuery);
-    return CustomTextField(
-      hintText: 'Search Labs or technologies...',
-      controller: controller,
-      prefixIcon: Icons.search_rounded,
-    );
-  }
+        // Featured Big Card: "When Agents Act Without You"
+        _buildFeaturedLabCard(context),
+        const SizedBox(height: 16.0),
 
-  Widget _buildSectionHeader(String title, {VoidCallback? onSeeAll}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: AppColors.deepInk,
-            fontSize: 15.5,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.2,
-          ),
+        // Lab Row 1: Hallucinations on Record
+        YVLabRow(
+          imageUrl:
+              'https://storage.googleapis.com/banani-generated-images/generated-images/8e61209b-5eca-4613-bd1c-c35252a0e38c.jpg',
+          category: 'RAG / Knowledge',
+          tierText: 'Free',
+          isPremium: false,
+          title: 'Hallucinations on Record',
+          level: 'Beginner',
+          duration: '35 min',
+          buildersCount: '412',
+          onStartLab: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BuildItView()),
+            );
+          },
         ),
-        if (onSeeAll != null)
-          GestureDetector(
-            onTap: onSeeAll,
-            behavior: HitTestBehavior.opaque,
-            child: const Text(
-              'See all →',
-              style: TextStyle(
-                color: AppColors.mutedPurple,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w700,
+        const SizedBox(height: 14.0),
+
+        // Lab Row 2: The Face as Evidence
+        YVLabRow(
+          imageUrl:
+              'https://storage.googleapis.com/banani-generated-images/generated-images/13f8900c-d2e2-4244-85f3-594bb4e16edb.jpg',
+          category: 'Biometrics',
+          tierText: 'Premium',
+          isPremium: true,
+          title: 'The Face as Evidence',
+          level: 'Advanced',
+          duration: '55 min',
+          buildersCount: '264',
+          onStartLab: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const PremiumLockedGateView(
+                  contentTitle: 'The Face as Evidence: Neural Forensics',
+                  category: 'Biometrics & AI Ethics',
+                  level: 'Advanced Architecture',
+                  duration: '55 min',
+                  buildersCount: '264 active builders',
+                ),
               ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeaturedLabCard(BuildContext context) {
+    return CustomCard(
+      backgroundColor: AppColors.bananiCard,
+      borderRadius: BorderRadius.circular(18.0),
+      border: Border.all(
+        color: AppColors.bananiBorder,
+        width: 1.0,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.bananiInk.withValues(alpha: 0.07),
+          blurRadius: 32.0,
+          offset: const Offset(0, 12.0),
+          spreadRadius: 0,
+        ),
+      ],
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 16:9 Image with Floating Badge
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(18.0)),
+            child: Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    'https://storage.googleapis.com/banani-generated-images/generated-images/8dce4596-317c-4bfe-bfb8-6856e9551e6e.jpg',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: AppColors.bananiLavender,
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.precision_manufacturing_rounded,
+                          color: AppColors.bananiPrimary,
+                          size: 48.0,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Positioned(
+                  top: 14.0,
+                  left: 14.0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 6.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 8.0,
+                          offset: const Offset(0, 2.0),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 6.0,
+                          height: 6.0,
+                          decoration: const BoxDecoration(
+                            color: AppColors.bananiAccent,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6.5),
+                        const Text(
+                          'AI Agents · Intermediate',
+                          style: TextStyle(
+                            color: AppColors.bananiInk,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-      ],
+
+          // Body Content
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Tags: Premium Lab & Live Builders
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6.0,
+                  runSpacing: 4.0,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(
+                            Icons.workspace_premium_rounded,
+                            color: AppColors.bananiAccent,
+                            size: 14.0,
+                          ),
+                          SizedBox(width: 4.0),
+                          Text(
+                            'Premium Lab',
+                            style: TextStyle(
+                              color: AppColors.bananiAccent,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _buildDotSeparator(),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(
+                            Icons.people_outline_rounded,
+                            color: AppColors.bananiSlate,
+                            size: 14.0,
+                          ),
+                          SizedBox(width: 4.0),
+                          Text(
+                            '318 building now',
+                            style: TextStyle(
+                              color: AppColors.bananiSlate,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10.0),
+
+                // Title
+                const Text(
+                  'When Agents Act Without You',
+                  style: TextStyle(
+                    color: AppColors.bananiInk,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+
+                // Description
+                const Text(
+                  'Give an agent real tools, let it overstep its mandate, then trace where liability actually lands.',
+                  style: TextStyle(
+                    color: AppColors.bananiSlate,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    height: 1.45,
+                  ),
+                ),
+                const SizedBox(height: 18.0),
+
+                // LAB PLAYER · 4 STAGES Inner Box
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.bananiBackground,
+                    borderRadius: BorderRadius.circular(12.0),
+                    border: Border.all(
+                      color: AppColors.bananiBorder,
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'LAB PLAYER · 4 STAGES',
+                        style: TextStyle(
+                          color: AppColors.bananiSlate,
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 12.0),
+
+                      // Stage 1: Build it (Done) -> tap opens BuildItView
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BuildItView(),
+                            ),
+                          );
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 24.0,
+                              height: 24.0,
+                              decoration: const BoxDecoration(
+                                color: AppColors.bananiSuccess,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 14.0,
+                              ),
+                            ),
+                            const SizedBox(width: 12.0),
+                            const Expanded(
+                              child: Text(
+                                'Build it',
+                                style: TextStyle(
+                                  color: AppColors.bananiInk,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              'Done',
+                              style: TextStyle(
+                                color: AppColors.bananiSuccess,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+
+                      // Stage 2: Break it (Next - Coral soft highlighted) -> tap opens BreakItView
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BreakItView(),
+                            ),
+                          );
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 8.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.bananiCoralSoft,
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(
+                              color:
+                                  AppColors.bananiCoral.withValues(alpha: 0.25),
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 24.0,
+                                height: 24.0,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.bananiCoral,
+                                  shape: BoxShape.circle,
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '2',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12.0),
+                              const Expanded(
+                                child: Text(
+                                  'Break it',
+                                  style: TextStyle(
+                                    color: AppColors.bananiInk,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const Text(
+                                'Next',
+                                style: TextStyle(
+                                  color: AppColors.bananiCoral,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+
+                      // Stage 3: Understand it (12 min) -> tap opens UnderstandItView
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const UnderstandItView(),
+                            ),
+                          );
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 24.0,
+                              height: 24.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColors.bananiBorder,
+                                  width: 1.2,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '3',
+                                style: TextStyle(
+                                  color: AppColors.bananiSlate,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12.0),
+                            const Expanded(
+                              child: Text(
+                                'Understand it',
+                                style: TextStyle(
+                                  color: AppColors.bananiSlate,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              '12 min',
+                              style: TextStyle(
+                                color: AppColors.bananiSlate,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+
+                      // Stage 4: Advise better (11 min) -> tap opens AdviseBetterView
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AdviseBetterView(),
+                            ),
+                          );
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 24.0,
+                              height: 24.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColors.bananiBorder,
+                                  width: 1.2,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '4',
+                                style: TextStyle(
+                                  color: AppColors.bananiSlate,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12.0),
+                            const Expanded(
+                              child: Text(
+                                'Advise better',
+                                style: TextStyle(
+                                  color: AppColors.bananiSlate,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              '11 min',
+                              style: TextStyle(
+                                color: AppColors.bananiSlate,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+
+                // Meta Info: Duration & Activities
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6.0,
+                  runSpacing: 4.0,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(
+                            Icons.schedule_rounded,
+                            color: AppColors.bananiSlate,
+                            size: 14.0,
+                          ),
+                          SizedBox(width: 4.5),
+                          Text(
+                            '45 min total',
+                            style: TextStyle(
+                              color: AppColors.bananiSlate,
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _buildDotSeparator(),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(
+                            Icons.science_outlined,
+                            color: AppColors.bananiSlate,
+                            size: 14.0,
+                          ),
+                          SizedBox(width: 4.5),
+                          Text(
+                            '3 practical activities',
+                            style: TextStyle(
+                              color: AppColors.bananiSlate,
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18.0),
+
+                // Action 1: Start Lab Button (Primary)
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.0,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BuildItView(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.bananiPrimary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Start Lab',
+                          style: TextStyle(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 16.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+
+                // Action 2: Preview Lab Room Button (Outlined)
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.0,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LabRoomView(),
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: AppColors.bananiPrimary.withValues(alpha: 0.4),
+                        width: 1.2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                    child: const Text(
+                      'Preview Lab Room',
+                      style: TextStyle(
+                        color: AppColors.bananiPrimary,
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildCategoryGrid(BuildContext context, DiscoverViewModel viewModel) {
-    final categories = viewModel.categories;
-    if (categories.length < 4) return const SizedBox.shrink();
-
-    final icons = [
-      Icons.bolt_rounded,
-      Icons.lightbulb_rounded,
-      Icons.security_rounded,
-      Icons.settings_rounded,
-    ];
-
+  // ==========================================
+  // 5. EXPLORE TECHNOLOGY SECTION (2x2 Grid + Chips)
+  // ==========================================
+  Widget _buildExploreTechnologySection(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Expanded(child: _buildCategoryCard(context, categories[0], icons[0])),
+            const Expanded(
+              child: Text(
+                'Explore technology',
+                style: TextStyle(
+                  color: AppColors.bananiInk,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            GestureDetector(
+              onTap: () {
+                TabNavigationService.switchToTab(context, 1);
+              },
+              child: const Text(
+                'All topics',
+                style: TextStyle(
+                  color: AppColors.bananiPrimary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16.0),
+
+        // 2x2 Grid of Tech Cards
+        Row(
+          children: [
+            Expanded(
+              child: _buildTechCard(
+                title: 'AI Agents',
+                meta: '6 Labs · 1.2k builders',
+                icon: Icons.smart_toy_outlined,
+                isFeatured: true,
+                onTap: () {
+                  TabNavigationService.switchToTab(context, 1);
+                },
+              ),
+            ),
             const SizedBox(width: 12.0),
-            Expanded(child: _buildCategoryCard(context, categories[1], icons[1])),
+            Expanded(
+              child: _buildTechCard(
+                title: 'RAG / Knowledge',
+                meta: '4 Labs · 980 builders',
+                icon: Icons.storage_rounded,
+                isFeatured: false,
+                onTap: () {
+                  TabNavigationService.switchToTab(context, 1);
+                },
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12.0),
         Row(
           children: [
-            Expanded(child: _buildCategoryCard(context, categories[2], icons[2])),
+            Expanded(
+              child: _buildTechCard(
+                title: 'Biometrics',
+                meta: '3 Labs · 640 builders',
+                icon: Icons.fingerprint_rounded,
+                isFeatured: false,
+                onTap: () {
+                  TabNavigationService.switchToTab(context, 1);
+                },
+              ),
+            ),
             const SizedBox(width: 12.0),
-            Expanded(child: _buildCategoryCard(context, categories[3], icons[3])),
+            Expanded(
+              child: _buildTechCard(
+                title: 'AI Governance',
+                meta: '5 Labs · 830 builders',
+                icon: Icons.shield_outlined,
+                isFeatured: false,
+                onTap: () {
+                  TabNavigationService.switchToTab(context, 1);
+                },
+              ),
+            ),
           ],
+        ),
+        const SizedBox(height: 14.0),
+
+        // Filter Pills: Cybersecurity, Automation, etc.
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: _topicPills.map((topic) {
+            final bool isSelected = _selectedTopic == topic;
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedTopic = isSelected ? null : topic;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14.0,
+                  vertical: 9.0,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppColors.bananiLavender
+                      : AppColors.bananiCard,
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.bananiPrimary
+                        : AppColors.bananiBorder,
+                    width: 1.0,
+                  ),
+                ),
+                child: Text(
+                  topic,
+                  style: TextStyle(
+                    color: isSelected
+                        ? AppColors.bananiPrimary
+                        : AppColors.bananiSlate,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildCategoryCard(
-      BuildContext context, DiscoverCategoryModel category, IconData icon) {
+  Widget _buildTechCard({
+    required String title,
+    required String meta,
+    required IconData icon,
+    required bool isFeatured,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
-      onTap: () {
-        TabNavigationService.switchToTab(context, 1);
-      },
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        decoration: BoxDecoration(
-          color: category.backgroundColor,
-          borderRadius: BorderRadius.circular(16.0),
-          border: Border.all(
-            color: category.accentColor.withValues(alpha: 0.15),
-            width: 1.0,
-          ),
+      onTap: onTap,
+      child: CustomCard(
+        backgroundColor: AppColors.bananiCard,
+        borderRadius: BorderRadius.circular(14.0),
+        border: Border.all(
+          color: isFeatured
+              ? AppColors.bananiPrimary.withValues(alpha: 0.3)
+              : AppColors.bananiBorder,
+          width: 1.0,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+        boxShadow: isFeatured
+            ? [
+                BoxShadow(
+                  color: AppColors.bananiInk.withValues(alpha: 0.07),
+                  blurRadius: 32.0,
+                  offset: const Offset(0, 12.0),
+                ),
+              ]
+            : null,
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 36.0,
-              height: 36.0,
+              width: 40.0,
+              height: 40.0,
               decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
+                color: isFeatured
+                    ? AppColors.bananiLavender
+                    : AppColors.bananiBackground,
+                borderRadius: BorderRadius.circular(8.0),
+                border: isFeatured
+                    ? null
+                    : Border.all(
+                        color: AppColors.bananiBorder,
+                        width: 1.0,
+                      ),
               ),
-              alignment: Alignment.center,
               child: Icon(
                 icon,
-                color: category.accentColor,
+                color: isFeatured
+                    ? AppColors.bananiPrimary
+                    : AppColors.bananiInk,
                 size: 20.0,
               ),
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 12.0),
             Text(
-              category.title,
-              style: const TextStyle(
-                color: AppColors.deepInk,
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
-              ),
+              title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.bananiInk,
+                fontSize: 14.5,
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: 4.0),
             Text(
-              'Explore →',
-              style: TextStyle(
-                color: category.accentColor,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w700,
-              ),
+              meta,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.bananiSlate,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -363,244 +1434,482 @@ class DiscoverView extends StatelessWidget {
     );
   }
 
-  Widget _buildPromoBanner(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.heroCardPurple,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.heroCardPurple.withValues(alpha: 0.25),
-            blurRadius: 18.0,
-            offset: const Offset(0, 6.0),
+  // ==========================================
+  // 6. WHO ELSE IS BUILDING THIS? SECTION
+  // ==========================================
+  Widget _buildPeersSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Who else is building this?',
+          style: TextStyle(
+            color: AppColors.bananiInk,
+            fontSize: 20.0,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.3,
           ),
-        ],
-      ),
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        const SizedBox(height: 4.0),
+        const Text(
+          '318 professionals are working on this Lab right now.',
+          style: TextStyle(
+            color: AppColors.bananiSlate,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        const SizedBox(height: 16.0),
+
+        CustomCard(
+          backgroundColor: AppColors.bananiCard,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: AppColors.bananiBorder,
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.bananiInk.withValues(alpha: 0.07),
+              blurRadius: 32.0,
+              offset: const Offset(0, 12.0),
+              spreadRadius: 0,
+            ),
+          ],
+          padding: const EdgeInsets.all(22.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Overlapping Avatar Stack
+              _buildAvatarStack(),
+              const SizedBox(height: 20.0),
+
+              // Divider
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 3.5,
-                ),
+                height: 1.0,
+                color: AppColors.bananiBorder,
+              ),
+              const SizedBox(height: 18.0),
+
+              // Peer 1: Maya Okafor
+              _buildPeerRow(
+                name: 'Maya Okafor',
+                role: 'Data Protection Associate · Privacy',
+                avatarUrl:
+                    'https://storage.googleapis.com/banani-avatars/avatar/female/25-35/African/1',
+              ),
+              const SizedBox(height: 16.0),
+
+              // Peer 2: Daniel Reyes
+              _buildPeerRow(
+                name: 'Daniel Reyes',
+                role: 'Litigation Counsel · Agents',
+                avatarUrl:
+                    'https://storage.googleapis.com/banani-avatars/avatar/male/35-50/European/8',
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAvatarStack() {
+    final List<String> avatars = [
+      'https://storage.googleapis.com/banani-avatars/avatar/male/25-35/Middle Eastern/1',
+      'https://storage.googleapis.com/banani-avatars/avatar/female/25-35/Hispanic/4',
+      'https://storage.googleapis.com/banani-avatars/avatar/male/35-50/European/6',
+      'https://storage.googleapis.com/banani-avatars/avatar/female/25-35/East Asian/7',
+    ];
+
+    return SizedBox(
+      height: 40.0,
+      child: Stack(
+        children: [
+          for (int i = 0; i < avatars.length; i++)
+            Positioned(
+              left: i * 28.0,
+              child: Container(
+                width: 40.0,
+                height: 40.0,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF857A9D),
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: const Text(
-                  'FREE FIRST LAB',
-                  style: TextStyle(
+                  shape: BoxShape.circle,
+                  border: Border.all(
                     color: Colors.white,
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
+                    width: 2.5,
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    width: 7.0,
-                    height: 7.0,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF10B981),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 5.0),
-                  const Text(
-                    '34 active now',
-                    style: TextStyle(
-                      color: AppColors.heroCardSubtext,
-                      fontSize: 11.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12.0),
-          const Text(
-            'Build & Stress-Test Your\nFirst AI Workflow',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 17.5,
-              fontWeight: FontWeight.bold,
-              height: 1.25,
-            ),
-          ),
-          const SizedBox(height: 5.0),
-          const Text(
-            'Build · Break · Understand · Advise',
-            style: TextStyle(
-              color: AppColors.heroCardSubtext,
-              fontSize: 11.5,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 14.0),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  TabNavigationService.switchToTab(context, 1);
-                },
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 22.0,
-                    vertical: 7.5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Start Free →',
-                    style: TextStyle(
-                      color: Color(0xFF5B4F73),
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.bold,
+                child: ClipOval(
+                  child: Image.network(
+                    avatars[i],
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: AppColors.bananiLavender,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12.0),
-              const Text(
-                '⏱️ 45 mins',
+            ),
+          // Counter pill: +314
+          Positioned(
+            left: avatars.length * 28.0,
+            child: Container(
+              height: 40.0,
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              decoration: BoxDecoration(
+                color: AppColors.bananiInk,
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2.5,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                '+314',
                 style: TextStyle(
-                  color: AppColors.heroCardSubtext,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCurrentRoomCard(
-      BuildContext context, DiscoverViewModel viewModel) {
-    final room = viewModel.currentRoom;
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.roomCardBg,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: const Color(0xFFE2DCE8),
-          width: 1.0,
+  Widget _buildPeerRow({
+    required String name,
+    required String role,
+    required String avatarUrl,
+  }) {
+    final bool isConnected = _connectedUsers.contains(name);
+
+    return Row(
+      children: [
+        ClipOval(
+          child: Container(
+            width: 44.0,
+            height: 44.0,
+            color: AppColors.bananiLavender,
+            child: Image.network(
+              avatarUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: AppColors.bananiLavender,
+                alignment: Alignment.center,
+                child: Text(
+                  name.isNotEmpty ? name[0] : 'U',
+                  style: const TextStyle(
+                    color: AppColors.bananiPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 14.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        const SizedBox(width: 12.0),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                room.label,
-                style: const TextStyle(
-                  color: AppColors.roomCardSubtext,
-                  fontSize: 10.0,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.8,
-                ),
+                name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppColors.bananiInk,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 9.0,
-                  vertical: 2.0,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD1FAE5),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: const Text(
-                  'ACTIVE',
-                  style: TextStyle(
-                    color: Color(0xFF065F46),
-                    fontSize: 9.0,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.4,
-                  ),
+              const SizedBox(height: 2.0),
+              Text(
+                role,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppColors.bananiSlate,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+        ),
+        GestureDetector(
+          onTap: () => _toggleConnect(name),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 40.0,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            decoration: BoxDecoration(
+              color: isConnected
+                  ? AppColors.bananiSuccessSoft
+                  : AppColors.bananiLavender,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              isConnected ? 'Connected' : 'Connect',
+              style: TextStyle(
+                color: isConnected
+                    ? AppColors.bananiSuccess
+                    : AppColors.bananiPrimary,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ==========================================
+  // 7. LAB ROOM ACTIVITY SECTION + ALL ACCESS BANNER
+  // ==========================================
+  Widget _buildLabRoomActivitySection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const Expanded(
+              child: Text(
+                'Lab Room activity',
+                style: TextStyle(
+                  color: AppColors.bananiInk,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LabRoomView()),
+                );
+              },
+              child: const Text(
+                'Open Room',
+                style: TextStyle(
+                  color: AppColors.bananiPrimary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14.0),
+
+        // Room Post 1: Maya Okafor
+        YVRoomPost(
+          authorName: 'Maya Okafor',
+          authorRole: 'Data Protection Associate',
+          avatarUrl:
+              'https://storage.googleapis.com/banani-avatars/avatar/female/25-35/African/1',
+          badgeText: 'Failure',
+          isFailureBadge: true,
+          content:
+              'Broke the RAG lab on purpose — removed the source filter and it cited a clause that never existed.',
+          contextInfo: 'Hallucinations on Record • 12m',
+          commentsCount: 24,
+          initialLikesCount: 14,
+        ),
+        const SizedBox(height: 14.0),
+
+        // Room Post 2: Daniel Reyes
+        YVRoomPost(
+          authorName: 'Daniel Reyes',
+          authorRole: 'Litigation Counsel',
+          avatarUrl:
+              'https://storage.googleapis.com/banani-avatars/avatar/male/25-35/European/8',
+          badgeText: 'Insight',
+          isFailureBadge: false,
+          content:
+              'Advise Better prompt that stuck with me: what instruction would you put in writing before delegating to an agent?',
+          contextInfo: 'When Agents Act Without You · 32m · 18 replies',
+          commentsCount: 24,
+          initialLikesCount: 19,
+        ),
+        const SizedBox(height: 16.0),
+
+        // All Access Membership Banner: $19/mo
+        CustomCard(
+          backgroundColor: AppColors.bananiCard,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: AppColors.bananiAccent.withValues(alpha: 0.35),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.bananiInk.withValues(alpha: 0.07),
+              blurRadius: 32.0,
+              offset: const Offset(0, 12.0),
+              spreadRadius: 0,
+            ),
+          ],
+          padding: const EdgeInsets.all(20.0),
+          child: Row(
             children: [
+              Container(
+                width: 44.0,
+                height: 44.0,
+                decoration: BoxDecoration(
+                  color: AppColors.bananiAccent,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: const Icon(
+                  Icons.workspace_premium_rounded,
+                  color: Colors.white,
+                  size: 22.0,
+                ),
+              ),
+              const SizedBox(width: 14.0),
               Expanded(
-                child: Text(
-                  room.title,
-                  style: const TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.deepInk,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'All Access · \$19/mo',
+                      style: TextStyle(
+                        color: AppColors.bananiInk,
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 3.0),
+                    Text(
+                      'Unlock all Labs, failure scenarios & Fluency.',
+                      style: TextStyle(
+                        color: AppColors.bananiSlate,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w400,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 10.0),
-              GestureDetector(
-                onTap: () {
-                  TabNavigationService.switchToTab(context, 2);
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PremiumLockedGateView(),
+                    ),
+                  );
                 },
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18.0,
-                    vertical: 5.5,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.bananiInk,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  minimumSize: const Size(0, 46.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    border: Border.all(
-                      color: const Color(0xFF9E93B0),
-                      width: 1.2,
-                    ),
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: const Text(
-                    'Open Room',
-                    style: TextStyle(
-                      color: Color(0xFF5B4F73),
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                child: const Text(
+                  'Get',
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4.0),
-          Text(
-            room.subtitle,
-            style: const TextStyle(
-              fontSize: 11.0,
-              color: AppColors.roomCardSubtext,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDotSeparator() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+      child: Container(
+        width: 3.0,
+        height: 3.0,
+        decoration: const BoxDecoration(
+          color: AppColors.bananiBorder,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+
+  void _showNotificationSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.all(24.0),
+        decoration: const BoxDecoration(
+          color: AppColors.bananiCard,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: const [
+                Icon(
+                  Icons.notifications_active_rounded,
+                  color: AppColors.bananiAccent,
+                  size: 22.0,
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  'Lab Notifications',
+                  style: TextStyle(
+                    color: AppColors.bananiInk,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            const SizedBox(height: 16.0),
+            const Text(
+              '• Alex left an insight on "Hallucinations on Record"\n• 14 peers joined the "AI Agents" sprint\n• New failure benchmark released for Biometrics',
+              style: TextStyle(
+                color: AppColors.bananiSlate,
+                fontSize: 14.0,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            SizedBox(
+              width: double.infinity,
+              height: 46.0,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.bananiPrimary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: const Text('Dismiss'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

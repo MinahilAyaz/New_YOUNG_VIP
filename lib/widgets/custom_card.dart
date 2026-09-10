@@ -5,28 +5,28 @@ class CustomCard extends StatelessWidget {
   final Widget child;
   final Color backgroundColor;
   final EdgeInsetsGeometry padding;
+  final BorderRadiusGeometry? borderRadius;
+  final List<BoxShadow>? boxShadow;
+  final Border? border;
 
   const CustomCard({
     super.key,
     required this.child,
     this.backgroundColor = AppColors.pureWhite,
     this.padding = const EdgeInsets.all(16.0),
+    this.borderRadius,
+    this.boxShadow,
+    this.border,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isWhite = backgroundColor == AppColors.pureWhite;
-
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(20.0),
-        border: isWhite
-            ? Border.all(
-                color: AppColors.blueGray.withValues(alpha: 0.15),
-                width: 1.0,
-              )
-            : null,
+        borderRadius: borderRadius ?? BorderRadius.circular(24.0),
+        boxShadow: boxShadow ?? AppColors.softShadow,
+        border: border,
       ),
       child: Padding(
         padding: padding,

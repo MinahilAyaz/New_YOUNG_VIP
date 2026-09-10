@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:young_vip/main.dart';
-import 'package:young_vip/widgets/custom_bottom_nav_bar.dart';
+import 'package:young_vip/views/homepage_view.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
@@ -8,7 +8,8 @@ void main() {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    // Verify that the bottom navigation bar is present on home screen.
-    expect(find.byType(CustomBottomNavBar), findsOneWidget);
+    // Verify that the HomepageView is present on initial launch.
+    expect(find.byType(HomepageView), findsOneWidget);
+    expect(find.text('Start Free'), findsOneWidget);
   });
 }

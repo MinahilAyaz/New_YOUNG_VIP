@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../core/theme/app_colors.dart';
-import '../data/models/lab_model.dart';
-import '../viewmodels/labs_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
-import '../widgets/custom_text_field.dart';
+import '../widgets/young_vip_wordmark.dart';
 import 'lab_detail_view.dart';
-import 'premium_lab_view.dart';
 
-class LabsView extends StatelessWidget {
+class LabsView extends StatefulWidget {
   final bool isRootTab;
 
   const LabsView({
@@ -19,62 +14,151 @@ class LabsView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LabsViewModel>(
-      create: (_) => LabsViewModel(),
-      child: Scaffold(
-        backgroundColor: AppColors.warmIvory,
-        drawer: const CustomDrawer(),
-        body: Consumer<LabsViewModel>(
-          builder: (context, viewModel, _) {
-            final double screenWidth = MediaQuery.of(context).size.width;
-            final double horizontalPadding =
-                screenWidth > 600 ? 24.0 : screenWidth * 0.055;
+  State<LabsView> createState() => _LabsViewState();
+}
 
-            return SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 540.0),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding,
-                      vertical: 12.0,
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildTopBar(context),
-                          const SizedBox(height: 18.0),
-                          _buildHeading(),
-                          const SizedBox(height: 16.0),
-                          _buildSearchField(viewModel),
-                          const SizedBox(height: 16.0),
-                          _buildCategoryPills(viewModel),
-                          const SizedBox(height: 20.0),
-                          _buildFeaturedHeroCard(context),
-                          const SizedBox(height: 22.0),
-                          _buildSectionHeader('All Interactive Labs (${viewModel.labs.length})'),
-                          const SizedBox(height: 12.0),
-                          _buildLabList(context, viewModel),
-                          const SizedBox(height: 16.0),
-                        ],
-                      ),
-                    ),
-                  ),
+class _LabsViewState extends State<LabsView> {
+  int _selectedDayIndex = 2; // Tue 28
+  final ScrollController _cardScrollController = ScrollController();
+
+  final List<Map<String, String>> _weekDays = [
+    {'day': 'Sun', 'date': '26'},
+    {'day': 'Mon', 'date': '27'},
+    {'day': 'Tue', 'date': '28'},
+    {'day': 'Wed', 'date': '29'},
+    {'day': 'Thu', 'date': '30'},
+    {'day': 'Fri', 'date': '01'},
+    {'day': 'Sat', 'date': '02'},
+  ];
+
+  final List<Map<String, dynamic>> _domainCards = [
+    {
+      'title': 'AI Agents &\nWorkflows',
+      'amount': '14 Labs',
+      'icon': Icons.bolt_rounded,
+      'bgColor': AppColors.pastelPeach,
+    },
+    {
+      'title': 'RAG & Vector\nPipelines',
+      'amount': '12 Labs',
+      'icon': Icons.lightbulb_rounded,
+      'bgColor': AppColors.pastelLilac,
+    },
+    {
+      'title': 'Security &\nSandboxes',
+      'amount': '8 Labs',
+      'icon': Icons.security_rounded,
+      'bgColor': AppColors.periwinkle,
+    },
+    {
+      'title': 'Autonomous\nAutomation',
+      'amount': '6 Labs',
+      'icon': Icons.settings_rounded,
+      'bgColor': AppColors.blushPink,
+    },
+  ];
+
+  final List<Map<String, dynamic>> _activeLabTracks = [
+    {
+      'title': 'Agentic Reasoning Loop',
+      'subtitle': 'Multi-agent debate & consensus evaluation',
+      'stage': 'Stage 3',
+      'icon': Icons.psychology_rounded,
+      'iconColor': const Color(0xFF9C6FE4),
+      'bgColor': const Color(0xFFF3EAFE),
+    },
+    {
+      'title': 'Cross-Domain RAG Retrieval',
+      'subtitle': 'Hybrid keyword & dense semantic embeddings',
+      'stage': 'Stage 2',
+      'icon': Icons.storage_rounded,
+      'iconColor': const Color(0xFFE57373),
+      'bgColor': const Color(0xFFFFF0ED),
+    },
+    {
+      'title': 'Prompt Injection Defense',
+      'subtitle': 'Defending LLM tool-calling against jailbreaks',
+      'stage': 'Stage 1',
+      'icon': Icons.security_rounded,
+      'iconColor': const Color(0xFF9C6FE4),
+      'bgColor': const Color(0xFFF3EAFE),
+    },
+    {
+      'title': 'Enterprise Sandbox Deployment',
+      'subtitle': 'Production-ready automated test harness',
+      'stage': 'Stage 4',
+      'icon': Icons.rocket_launch_rounded,
+      'iconColor': const Color(0xFFE57373),
+      'bgColor': const Color(0xFFFFF0ED),
+    },
+  ];
+
+  @override
+  void dispose() {
+    _cardScrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollCardsForward() {
+    if (_cardScrollController.hasClients) {
+      _cardScrollController.animateTo(
+        _cardScrollController.offset + 180.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double horizontalPadding =
+        screenWidth > 600 ? 24.0 : screenWidth * 0.055;
+
+    return Scaffold(
+      backgroundColor: AppColors.peachBackground,
+      drawer: const CustomDrawer(),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 540.0),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: 12.0,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTopBar(context),
+                    const SizedBox(height: 18.0),
+                    _buildCalendarStrip(),
+                    const SizedBox(height: 20.0),
+                    _buildExpensesHeader(),
+                    const SizedBox(height: 18.0),
+                    _buildCardsWithOverlappingArrow(),
+                    const SizedBox(height: 24.0),
+                    _buildSectionTitle('Active Lab Tracks'),
+                    const SizedBox(height: 14.0),
+                    _buildTransactionsList(),
+                    const SizedBox(height: 22.0),
+                    _buildQuickPayBar(context),
+                    const SizedBox(height: 88.0),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
-        bottomNavigationBar: isRootTab
-            ? null
-            : const CustomBottomNavBar(
-                currentIndex: 1,
-              ),
       ),
+      bottomNavigationBar: widget.isRootTab
+          ? null
+          : const CustomBottomNavBar(
+              currentIndex: 1,
+            ),
     );
   }
 
@@ -83,72 +167,51 @@ class LabsView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () => Scaffold.of(ctx).openDrawer(),
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 34.0,
-                  height: 34.0,
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
+        Expanded(
+          child: Builder(
+            builder: (ctx) => GestureDetector(
+              onTap: () => Scaffold.of(ctx).openDrawer(),
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40.0,
+                    height: 40.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.pureWhite,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: AppColors.buttonShadow,
+                    ),
+                    child: const Icon(
+                      Icons.menu_rounded,
+                      color: AppColors.deepInk,
+                      size: 20.0,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.menu_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
+                  const SizedBox(width: 10.0),
+                  const Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: YoungVipWordmark(),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+        const SizedBox(width: 8.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 40.0,
+              height: 40.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -156,14 +219,14 @@ class LabsView extends StatelessWidget {
                   const Icon(
                     Icons.notifications_none_rounded,
                     color: AppColors.deepInk,
-                    size: 18.0,
+                    size: 20.0,
                   ),
                   Positioned(
-                    top: 7.0,
-                    right: 8.0,
+                    top: 9.0,
+                    right: 9.0,
                     child: Container(
-                      width: 6.0,
-                      height: 6.0,
+                      width: 7.0,
+                      height: 7.0,
                       decoration: const BoxDecoration(
                         color: Color(0xFFEF4444),
                         shape: BoxShape.circle,
@@ -173,22 +236,19 @@ class LabsView extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8.0),
+            const SizedBox(width: 10.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
-                color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+              width: 40.0,
+              height: 40.0,
+              decoration: BoxDecoration(
+                color: AppColors.pureWhite,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
-              alignment: Alignment.center,
-              child: const Text(
-                'AV',
-                style: TextStyle(
-                  color: AppColors.avatarText,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: const Icon(
+                Icons.search_rounded,
+                color: AppColors.deepInk,
+                size: 20.0,
               ),
             ),
           ],
@@ -197,224 +257,217 @@ class LabsView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeading() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Text(
-          'Interactive Labs',
-          style: TextStyle(
-            color: AppColors.deepInk,
-            fontSize: 24.0,
-            fontWeight: FontWeight.w800,
-            height: 1.25,
-            letterSpacing: -0.3,
+  Widget _buildCalendarStrip() {
+    return SizedBox(
+      height: 64.0,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        itemCount: _weekDays.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10.0),
+        itemBuilder: (context, index) {
+          final isSelected = _selectedDayIndex == index;
+          final item = _weekDays[index];
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedDayIndex = index;
+              });
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 52.0,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.pastelPeach : AppColors.pureWhite,
+                borderRadius: BorderRadius.circular(18.0),
+                boxShadow: isSelected
+                    ? AppColors.buttonShadow
+                    : [
+                        BoxShadow(
+                          color: const Color(0xFFD49B85).withValues(alpha: 0.08),
+                          blurRadius: 10.0,
+                          offset: const Offset(0, 3.0),
+                        ),
+                      ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    item['day']!,
+                    style: TextStyle(
+                      color: isSelected ? AppColors.deepInk : const Color(0xFF8E8D88),
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 3.0),
+                  Text(
+                    item['date']!,
+                    style: const TextStyle(
+                      color: AppColors.deepInk,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildExpensesHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text(
+                  'Interactive Labs',
+                  style: TextStyle(
+                    color: AppColors.deepInk,
+                    fontSize: 26.0,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SizedBox(width: 6.0),
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: AppColors.deepInk,
+                  size: 26.0,
+                ),
+              ],
+            ),
           ),
         ),
-        SizedBox(height: 4.0),
-        Text(
-          'Master AI builder workflows through live execution',
-          style: TextStyle(
-            color: AppColors.roomCardSubtext,
-            fontSize: 12.5,
-            fontWeight: FontWeight.w500,
+        const SizedBox(width: 8.0),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+          decoration: BoxDecoration(
+            color: AppColors.pureWhite,
+            borderRadius: BorderRadius.circular(14.0),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFD49B85).withValues(alpha: 0.08),
+                blurRadius: 8.0,
+                offset: const Offset(0, 2.0),
+              ),
+            ],
+          ),
+          child: const Text(
+            'Active Sprint',
+            style: TextStyle(
+              color: AppColors.deepInk,
+              fontSize: 12.0,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSearchField(LabsViewModel viewModel) {
-    final controller = TextEditingController(text: viewModel.searchQuery);
-    return CustomTextField(
-      hintText: 'Search labs, skills, or workflows...',
-      controller: controller,
-      prefixIcon: Icons.search_rounded,
-    );
-  }
-
-  Widget _buildCategoryPills(LabsViewModel viewModel) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      child: Row(
-        children: viewModel.categories.map((category) {
-          final bool isSelected = viewModel.selectedCategory == category;
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: GestureDetector(
-              onTap: () => viewModel.setCategory(category),
-              behavior: HitTestBehavior.opaque,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 7.0,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.deepInk : AppColors.pureWhite,
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(
-                    color: isSelected
-                        ? AppColors.deepInk
-                        : const Color(0xFFEDE7F2),
-                    width: 1.0,
-                  ),
-                ),
-                child: Text(
-                  category,
-                  style: TextStyle(
-                    color: isSelected
-                        ? AppColors.pureWhite
-                        : AppColors.deepInk,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildFeaturedHeroCard(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.heroCardPurple,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.heroCardPurple.withValues(alpha: 0.25),
-            blurRadius: 18.0,
-            offset: const Offset(0, 6.0),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildCardsWithOverlappingArrow() {
+    return SizedBox(
+      height: 220.0,
+      child: Stack(
+        alignment: Alignment.centerRight,
+        clipBehavior: Clip.none,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 3.5,
-                ),
+          ListView.separated(
+            controller: _cardScrollController,
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            padding: const EdgeInsets.only(right: 32.0),
+            itemCount: _domainCards.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 16.0),
+            itemBuilder: (context, index) {
+              final card = _domainCards[index];
+
+              return Container(
+                width: 175.0,
+                padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF857A9D),
-                  borderRadius: BorderRadius.circular(16.0),
+                  color: card['bgColor'] as Color,
+                  borderRadius: BorderRadius.circular(28.0),
+                  boxShadow: AppColors.softShadow,
                 ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.bolt_rounded,
-                      color: Colors.white,
-                      size: 13.0,
-                    ),
-                    SizedBox(width: 3.0),
-                    Text(
-                      'ACTIVE SPRINT',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.8,
+                    Container(
+                      width: 44.0,
+                      height: 44.0,
+                      decoration: BoxDecoration(
+                        color: AppColors.pureWhite,
+                        borderRadius: BorderRadius.circular(16.0),
                       ),
+                      child: Icon(
+                        card['icon'] as IconData,
+                        color: AppColors.deepInk,
+                        size: 22.0,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          card['title'] as String,
+                          style: const TextStyle(
+                            color: AppColors.deepInk,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25,
+                          ),
+                        ),
+                        const SizedBox(height: 6.0),
+                        Text(
+                          card['amount'] as String,
+                          style: const TextStyle(
+                            color: AppColors.deepInk,
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-              const Row(
-                children: [
-                  Icon(Icons.star_rounded, color: Color(0xFFF59E0B), size: 16.0),
-                  SizedBox(width: 3.0),
-                  Text(
-                    '4.9 (1.2k)',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12.0),
-          const Text(
-            'AI Agents & Autonomous\nExecution Systems',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 17.5,
-              fontWeight: FontWeight.bold,
-              height: 1.25,
-            ),
-          ),
-          const SizedBox(height: 10.0),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4.0),
-            child: const LinearProgressIndicator(
-              value: 0.70,
-              minHeight: 6.0,
-              backgroundColor: Color(0xFF857A9D),
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
-            ),
-          ),
-          const SizedBox(height: 8.0),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '70% Complete · 4/6 Modules',
-                style: TextStyle(
-                  color: AppColors.heroCardSubtext,
-                  fontSize: 11.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Text(
-                '⏱️ 20 min left',
-                style: TextStyle(
-                  color: AppColors.heroCardSubtext,
-                  fontSize: 11.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14.0),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const LabDetailView(),
-                ),
               );
             },
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 22.0,
-                vertical: 7.5,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(24.0),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'Continue Lab →',
-                style: TextStyle(
-                  color: Color(0xFF5B4F73),
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.bold,
+          ),
+          // Overlapping circular white arrow button
+          Positioned(
+            right: 0,
+            child: GestureDetector(
+              onTap: _scrollCardsForward,
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 52.0,
+                height: 52.0,
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  shape: BoxShape.circle,
+                  boxShadow: AppColors.softShadow,
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: AppColors.deepInk,
+                  size: 18.0,
                 ),
               ),
             ),
@@ -424,163 +477,134 @@ class LabsView extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionTitle(String title) {
     return Text(
       title,
       style: const TextStyle(
         color: AppColors.deepInk,
-        fontSize: 15.5,
+        fontSize: 14.5,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.2,
       ),
     );
   }
 
-  Widget _buildLabList(BuildContext context, LabsViewModel viewModel) {
+  Widget _buildTransactionsList() {
     return Column(
-      children: viewModel.labs.map((lab) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: _buildLabCard(context, lab),
+      children: _activeLabTracks.map((item) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LabDetailView()),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+            decoration: BoxDecoration(
+              color: AppColors.pureWhite,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFD49B85).withValues(alpha: 0.10),
+                  blurRadius: 14.0,
+                  offset: const Offset(0, 4.0),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44.0,
+                  height: 44.0,
+                  decoration: BoxDecoration(
+                    color: item['bgColor'] as Color,
+                    borderRadius: BorderRadius.circular(14.0),
+                  ),
+                  child: Icon(
+                    item['icon'] as IconData,
+                    color: item['iconColor'] as Color,
+                    size: 22.0,
+                  ),
+                ),
+                const SizedBox(width: 14.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item['title'] as String,
+                        style: const TextStyle(
+                          color: AppColors.deepInk,
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 3.0),
+                      Text(
+                        item['subtitle'] as String,
+                        style: const TextStyle(
+                          color: Color(0xFF8E8D88),
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.peachBackground.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Text(
+                    item['stage'] as String,
+                    style: const TextStyle(
+                      color: AppColors.deepInk,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       }).toList(),
     );
   }
 
-  Widget _buildLabCard(BuildContext context, LabModel lab) {
-    final bool isDetail = lab.title.contains('Agents') || lab.title.contains('Studio');
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
+  Widget _buildQuickPayBar(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const LabDetailView()),
+        );
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        decoration: BoxDecoration(
+          color: AppColors.pureWhite,
+          borderRadius: BorderRadius.circular(28.0),
+          boxShadow: AppColors.softShadow,
         ),
-      ),
-      padding: const EdgeInsets.all(14.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 44.0,
-            height: 44.0,
-            decoration: BoxDecoration(
-              color: lab.tagBackgroundColor,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              lab.icon,
-              size: 22.0,
-              color: lab.accentColor,
-            ),
+        alignment: Alignment.center,
+        child: const Text(
+          'ENTER ACTIVE LAB',
+          style: TextStyle(
+            color: AppColors.deepInk,
+            fontSize: 15.0,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
           ),
-          const SizedBox(width: 12.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: lab.tagBackgroundColor,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        lab.tagLabel,
-                        style: TextStyle(
-                          color: lab.tagTextColor,
-                          fontSize: 9.0,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.4,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    const Icon(Icons.star_rounded, color: Color(0xFFF59E0B), size: 14.0),
-                    const SizedBox(width: 2.0),
-                    Text(
-                      lab.rating.toString(),
-                      style: const TextStyle(
-                        color: AppColors.deepInk,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6.0),
-                Text(
-                  lab.title,
-                  style: const TextStyle(
-                    color: AppColors.deepInk,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4.0),
-                Text(
-                  '${lab.modules} · ${lab.duration}',
-                  style: const TextStyle(
-                    color: AppColors.roomCardSubtext,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10.0),
-          GestureDetector(
-            onTap: isDetail
-                ? () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const LabDetailView(),
-                      ),
-                    );
-                  }
-                : () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PremiumLabView(),
-                      ),
-                    );
-                  },
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 6.5,
-              ),
-              decoration: BoxDecoration(
-                color: isDetail ? AppColors.deepInk : AppColors.roomCardBg,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Text(
-                'Start',
-                style: TextStyle(
-                  color: isDetail ? AppColors.pureWhite : AppColors.deepInk,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

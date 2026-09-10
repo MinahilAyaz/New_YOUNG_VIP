@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/young_vip_wordmark.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
@@ -59,7 +60,7 @@ class ExpertStudioView extends StatelessWidget {
                           _buildAuthoredLabsList(studioData.authoredLabs),
                           const SizedBox(height: 16.0),
                           _buildActionPill(context, studioData.buttonLabel),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -83,80 +84,64 @@ class ExpertStudioView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () {
-              if (Navigator.canPop(ctx)) {
-                Navigator.pop(ctx);
-              } else {
-                Scaffold.of(ctx).openDrawer();
-              }
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 34.0,
-                  height: 34.0,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (Navigator.canPop(context)) ...[
+              GestureDetector(
+                onTap: () => Navigator.maybePop(context),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: 38.0,
+                  height: 38.0,
                   decoration: BoxDecoration(
                     color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
-                    ),
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: AppColors.buttonShadow,
                   ),
-                  child: Icon(
-                    Navigator.canPop(context)
-                        ? Icons.arrow_back_rounded
-                        : Icons.menu_rounded,
+                  child: const Icon(
+                    Icons.arrow_back_rounded,
                     color: AppColors.deepInk,
                     size: 18.0,
                   ),
                 ),
-                const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
+              ),
+              const SizedBox(width: 8.0),
+            ],
+            Builder(
+              builder: (ctx) => GestureDetector(
+                onTap: () => Scaffold.of(ctx).openDrawer(),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: 38.0,
+                  height: 38.0,
+                  decoration: BoxDecoration(
+                    color: AppColors.pureWhite,
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: AppColors.buttonShadow,
+                  ),
+                  child: const Icon(
+                    Icons.menu_rounded,
+                    color: AppColors.deepInk,
+                    size: 18.0,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(width: 10.0),
+            const YoungVipWordmark(),
+          ],
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -183,11 +168,12 @@ class ExpertStudioView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -236,17 +222,11 @@ class ExpertStudioView extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.heroCardPurple,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.heroCardPurple.withValues(alpha: 0.25),
-            blurRadius: 18.0,
-            offset: const Offset(0, 6.0),
-          ),
-        ],
+        color: AppColors.pureWhite,
+        borderRadius: BorderRadius.circular(26.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(18.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -256,16 +236,16 @@ class ExpertStudioView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10.0,
-                  vertical: 3.5,
+                  vertical: 4.0,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF857A9D),
-                  borderRadius: BorderRadius.circular(16.0),
+                  color: AppColors.pastelLilac,
+                  borderRadius: BorderRadius.circular(14.0),
                 ),
                 child: Text(
                   studioData.tagLabel,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.deepInk,
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.8,
@@ -275,27 +255,27 @@ class ExpertStudioView extends StatelessWidget {
               const Text(
                 '1.4k Learners',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.deepInk,
                   fontSize: 12.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12.0),
+          const SizedBox(height: 14.0),
           const Text(
             'Author Interactive AI Labs',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.deepInk,
               fontSize: 19.0,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 6.0),
           Text(
             studioData.description,
             style: const TextStyle(
-              color: AppColors.heroCardSubtext,
+              color: AppColors.roomCardSubtext,
               fontSize: 12.0,
               height: 1.4,
             ),
@@ -307,17 +287,17 @@ class ExpertStudioView extends StatelessWidget {
               return Expanded(
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 3.0),
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12.0),
+                    color: AppColors.peachBackground.withValues(alpha: 0.40),
+                    borderRadius: BorderRadius.circular(14.0),
                   ),
                   child: Column(
                     children: [
                       Text(
                         '${item.count}',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.deepInk,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -326,7 +306,7 @@ class ExpertStudioView extends StatelessWidget {
                       Text(
                         item.title,
                         style: const TextStyle(
-                          color: AppColors.heroCardSubtext,
+                          color: AppColors.roomCardSubtext,
                           fontSize: 9.5,
                           fontWeight: FontWeight.w600,
                         ),
@@ -399,7 +379,8 @@ class ExpertStudioView extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             color: tool['color'] as Color,
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: AppColors.buttonShadow,
           ),
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -461,11 +442,8 @@ class ExpertStudioView extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.pureWhite,
-              borderRadius: BorderRadius.circular(18.0),
-              border: Border.all(
-                color: const Color(0xFFEDE7F2),
-                width: 1.0,
-              ),
+              borderRadius: BorderRadius.circular(22.0),
+              boxShadow: AppColors.softShadow,
             ),
             padding: const EdgeInsets.all(14.0),
             child: Row(
@@ -548,12 +526,13 @@ class ExpertStudioView extends StatelessWidget {
                 const SizedBox(width: 8.0),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 6.0,
+                    horizontal: 14.0,
+                    vertical: 7.0,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.roomCardBg,
+                    color: AppColors.alabaster,
                     borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: AppColors.buttonShadow,
                   ),
                   child: const Text(
                     'Edit →',

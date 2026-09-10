@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
 import '../data/models/lab_stage_screen_model.dart';
 import '../viewmodels/break_it_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/custom_drawer.dart';
+import '../widgets/young_vip_wordmark.dart';
+import 'understand_it_view.dart';
 
 class BreakItView extends StatelessWidget {
   final bool isRootTab;
@@ -20,6 +24,7 @@ class BreakItView extends StatelessWidget {
       create: (_) => BreakItViewModel(),
       child: Scaffold(
         backgroundColor: AppColors.warmIvory,
+        drawer: const CustomDrawer(),
         body: Consumer<BreakItViewModel>(
           builder: (context, viewModel, _) {
             final double screenWidth = MediaQuery.of(context).size.width;
@@ -51,7 +56,7 @@ class BreakItView extends StatelessWidget {
                           _buildContentBlocks(stageData.contentBlocks),
                           const SizedBox(height: 16.0),
                           _buildProceedPill(context),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -75,22 +80,19 @@ class BreakItView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: () => Navigator.maybePop(context),
-          behavior: HitTestBehavior.opaque,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 34.0,
-                height: 34.0,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.maybePop(context),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
                 decoration: BoxDecoration(
                   color: AppColors.pureWhite,
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(
-                    color: const Color(0xFFEDE7F2),
-                    width: 1.0,
-                  ),
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: AppColors.buttonShadow,
                 ),
                 child: const Icon(
                   Icons.arrow_back_rounded,
@@ -98,47 +100,42 @@ class BreakItView extends StatelessWidget {
                   size: 18.0,
                 ),
               ),
-              const SizedBox(width: 10.0),
-              RichText(
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'YOUNG ',
-                      style: TextStyle(
-                        color: AppColors.deepInk,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'VIP',
-                      style: TextStyle(
-                        color: AppColors.mutedPurple,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
+            ),
+            const SizedBox(width: 8.0),
+            Builder(
+              builder: (ctx) => GestureDetector(
+                onTap: () => Scaffold.of(ctx).openDrawer(),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: 38.0,
+                  height: 38.0,
+                  decoration: BoxDecoration(
+                    color: AppColors.pureWhite,
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: AppColors.buttonShadow,
+                  ),
+                  child: const Icon(
+                    Icons.menu_rounded,
+                    color: AppColors.deepInk,
+                    size: 18.0,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 10.0),
+            const YoungVipWordmark(),
+          ],
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -165,11 +162,12 @@ class BreakItView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -226,14 +224,11 @@ class BreakItView extends StatelessWidget {
 
   Widget _buildStepper(List<StageStepModel> steps) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
       child: Row(
         children: steps.map((step) {
@@ -245,7 +240,7 @@ class BreakItView extends StatelessWidget {
                   width: isCurrent ? 12.0 : 8.0,
                   height: isCurrent ? 12.0 : 8.0,
                   decoration: BoxDecoration(
-                    color: isCurrent ? AppColors.deepInk : const Color(0xFFD8D2E3),
+                    color: isCurrent ? AppColors.deepInk : AppColors.borderLight,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -294,11 +289,8 @@ class BreakItView extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: block.cardBackgroundColor,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -385,28 +377,44 @@ class BreakItView extends StatelessWidget {
 
   Widget _buildProceedPill(BuildContext context) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 22.0,
-          vertical: 8.0,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.deepInk,
-          borderRadius: BorderRadius.circular(24.0),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.deepInk.withValues(alpha: 0.15),
-              blurRadius: 16.0,
-              offset: const Offset(0, 4.0),
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.mediumImpact();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const UnderstandItView(),
             ),
-          ],
-        ),
-        child: const Text(
-          'Complete Stage & Proceed →',
-          style: TextStyle(
-            color: AppColors.pureWhite,
-            fontSize: 12.5,
-            fontWeight: FontWeight.bold,
+          );
+        },
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24.0,
+            vertical: 12.0,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.deepInk,
+            borderRadius: BorderRadius.circular(28.0),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.deepInk.withValues(alpha: 0.22),
+                blurRadius: 18.0,
+                offset: const Offset(0, 6.0),
+              ),
+            ],
+          ),
+          child: const FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'Complete Stage & Proceed to Understand It →',
+              style: TextStyle(
+                color: AppColors.pureWhite,
+                fontSize: 13.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.2,
+              ),
+            ),
           ),
         ),
       ),

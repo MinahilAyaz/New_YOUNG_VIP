@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/young_vip_wordmark.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
@@ -57,7 +58,7 @@ class MyBuildsView extends StatelessWidget {
                           _buildBuildItemsList(viewModel.filteredItems),
                           const SizedBox(height: 16.0),
                           _buildCreateBuildPill(context),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -81,72 +82,51 @@ class MyBuildsView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Builder(
-          builder: (ctx) => GestureDetector(
-            onTap: () => Scaffold.of(ctx).openDrawer(),
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 34.0,
-                  height: 34.0,
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
+        Expanded(
+          child: Builder(
+            builder: (ctx) => GestureDetector(
+              onTap: () => Scaffold.of(ctx).openDrawer(),
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 38.0,
+                    height: 38.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.pureWhite,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: AppColors.buttonShadow,
+                    ),
+                    child: const Icon(
+                      Icons.menu_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.menu_rounded,
-                    color: AppColors.deepInk,
-                    size: 18.0,
+                  const SizedBox(width: 10.0),
+                  const Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: YoungVipWordmark(),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+        const SizedBox(width: 8.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -173,11 +153,12 @@ class MyBuildsView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -226,71 +207,72 @@ class MyBuildsView extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.heroCardPurple,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.heroCardPurple.withValues(alpha: 0.25),
-            blurRadius: 18.0,
-            offset: const Offset(0, 6.0),
-          ),
-        ],
+        color: AppColors.pureWhite,
+        borderRadius: BorderRadius.circular(26.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(18.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 3.5,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF857A9D),
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.emoji_events_rounded,
-                      color: Colors.white,
-                      size: 13.0,
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 4.0,
                     ),
-                    SizedBox(width: 3.0),
-                    Text(
-                      'BUILDER PLATINUM',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.8,
-                      ),
+                    decoration: BoxDecoration(
+                      color: AppColors.pastelLilac,
+                      borderRadius: BorderRadius.circular(14.0),
                     ),
-                  ],
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.emoji_events_rounded,
+                          color: AppColors.deepInk,
+                          size: 13.0,
+                        ),
+                        SizedBox(width: 3.0),
+                        Text(
+                          'BUILDER PLATINUM',
+                          style: TextStyle(
+                            color: AppColors.deepInk,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(width: 8.0),
               const Text(
                 '780 / 1000 XP',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11.5,
+                  color: AppColors.deepInk,
+                  fontSize: 12.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12.0),
+          const SizedBox(height: 14.0),
           ClipRRect(
             borderRadius: BorderRadius.circular(4.0),
             child: const LinearProgressIndicator(
               value: 0.78,
               minHeight: 6.0,
-              backgroundColor: Color(0xFF857A9D),
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
+              backgroundColor: Color(0x33D49B85),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.deepInk),
             ),
           ),
           const SizedBox(height: 16.0),
@@ -300,31 +282,37 @@ class MyBuildsView extends StatelessWidget {
               return Expanded(
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 3.0),
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12.0),
+                    color: AppColors.peachBackground.withValues(alpha: 0.40),
+                    borderRadius: BorderRadius.circular(14.0),
                   ),
                   child: Column(
                     children: [
-                      Text(
-                        stat.value,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          stat.value,
+                          style: const TextStyle(
+                            color: AppColors.deepInk,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 2.0),
-                      Text(
-                        stat.label,
-                        style: const TextStyle(
-                          color: AppColors.heroCardSubtext,
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w600,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          stat.label,
+                          style: const TextStyle(
+                            color: AppColors.roomCardSubtext,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -358,12 +346,7 @@ class MyBuildsView extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.deepInk : AppColors.pureWhite,
                   borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(
-                    color: isSelected
-                        ? AppColors.deepInk
-                        : const Color(0xFFEDE7F2),
-                    width: 1.0,
-                  ),
+                  boxShadow: AppColors.buttonShadow,
                 ),
                 child: Text(
                   filter,
@@ -410,13 +393,10 @@ class MyBuildsView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(14.0),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -425,7 +405,7 @@ class MyBuildsView extends StatelessWidget {
             height: 44.0,
             decoration: BoxDecoration(
               color: item.statusBg,
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(14.0),
             ),
             alignment: Alignment.center,
             child: Icon(
@@ -439,28 +419,28 @@ class MyBuildsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: item.statusBg,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        item.status,
-                        style: TextStyle(
-                          color: item.statusText,
-                          fontSize: 9.0,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.4,
-                        ),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7.0,
+                      vertical: 2.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: item.statusBg,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Text(
+                      item.status,
+                      style: TextStyle(
+                        color: item.statusText,
+                        fontSize: 9.0,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.4,
                       ),
                     ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 6.0),
                 Text(
@@ -491,11 +471,12 @@ class MyBuildsView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 14.0,
-              vertical: 6.5,
+              vertical: 7.0,
             ),
             decoration: BoxDecoration(
-              color: AppColors.roomCardBg,
+              color: AppColors.alabaster,
               borderRadius: BorderRadius.circular(20.0),
+              boxShadow: AppColors.buttonShadow,
             ),
             child: const Text(
               'Inspect →',

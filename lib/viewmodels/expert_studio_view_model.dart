@@ -17,7 +17,7 @@ class ExpertStudioViewModel extends BaseViewModel {
             StudioStatusItemModel(
               title: 'Draft Labs',
               count: 3,
-              countColor: Color(0xFF6E6285),
+              countColor: Color(0xFF4F46E5),
             ),
             StudioStatusItemModel(
               title: 'Under Review',

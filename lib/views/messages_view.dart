@@ -7,6 +7,7 @@ import '../viewmodels/messages_view_model.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/young_vip_wordmark.dart';
 
 class MessagesView extends StatelessWidget {
   final bool isRootTab;
@@ -59,7 +60,7 @@ class MessagesView extends StatelessWidget {
                           _buildMessagesList(viewModel.filteredThreads),
                           const SizedBox(height: 16.0),
                           _buildNewChatPill(context),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 88.0),
                         ],
                       ),
                     ),
@@ -91,15 +92,12 @@ class MessagesView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 34.0,
-                  height: 34.0,
+                  width: 38.0,
+                  height: 38.0,
                   decoration: BoxDecoration(
                     color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: const Color(0xFFEDE7F2),
-                      width: 1.0,
-                    ),
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: AppColors.buttonShadow,
                   ),
                   child: const Icon(
                     Icons.menu_rounded,
@@ -108,30 +106,7 @@ class MessagesView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10.0),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'YOUNG ',
-                        style: TextStyle(
-                          color: AppColors.deepInk,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'VIP',
-                        style: TextStyle(
-                          color: AppColors.mutedPurple,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                const YoungVipWordmark(),
               ],
             ),
           ),
@@ -140,15 +115,12 @@ class MessagesView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.0,
-              height: 34.0,
+              width: 38.0,
+              height: 38.0,
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: const Color(0xFFEDE7F2),
-                  width: 1.0,
-                ),
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -175,11 +147,12 @@ class MessagesView extends StatelessWidget {
             ),
             const SizedBox(width: 8.0),
             Container(
-              width: 34.0,
-              height: 34.0,
-              decoration: const BoxDecoration(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
                 color: AppColors.avatarBg,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: AppColors.buttonShadow,
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -251,10 +224,7 @@ class MessagesView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.pureWhite,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFEDE7F2),
-                          width: 1.5,
-                        ),
+                        boxShadow: AppColors.buttonShadow,
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -325,13 +295,10 @@ class MessagesView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: const Color(0xFFEDE7F2),
-          width: 1.0,
-        ),
+        borderRadius: BorderRadius.circular(22.0),
+        boxShadow: AppColors.softShadow,
       ),
-      padding: const EdgeInsets.all(14.0),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
