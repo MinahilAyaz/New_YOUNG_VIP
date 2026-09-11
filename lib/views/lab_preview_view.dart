@@ -465,52 +465,46 @@ tradeoffs = {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Flexible(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const MainNavigationView(initialIndex: 0),
-                        ),
-                      );
-                    }
-                  },
-                  behavior: HitTestBehavior.opaque,
-                  child: Container(
-                    width: 38.0,
-                    height: 38.0,
-                    margin: const EdgeInsets.only(right: 10.0),
-                    decoration: BoxDecoration(
-                      color: AppColors.pureWhite,
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: AppColors.buttonShadow,
-                      border: Border.all(
-                        color: AppColors.cardBorder,
-                        width: 1.0,
-                      ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MainNavigationView(initialIndex: 0),
                     ),
-                    child: const Icon(
-                      Icons.arrow_back_rounded,
-                      color: AppColors.deepInk,
-                      size: 18.0,
-                    ),
+                  );
+                }
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                margin: const EdgeInsets.only(right: 10.0),
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: AppColors.buttonShadow,
+                  border: Border.all(
+                    color: AppColors.cardBorder,
+                    width: 1.0,
                   ),
                 ),
-                const YoungVipWordmark(),
-              ],
+                child: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: AppColors.deepInk,
+                  size: 18.0,
+                ),
+              ),
             ),
-          ),
+            const YoungVipWordmark(),
+          ],
         ),
         const SizedBox(width: 8.0),
         // Staging Status Badge
@@ -1183,56 +1177,7 @@ tradeoffs = {
                           ? const Color(0xFFE2E8F0)
                           : const Color(0xFFCBD5E1)),
                 ),
-                child: ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 0.0),
-                  leading: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 5.0, vertical: 1.5),
-                    decoration: BoxDecoration(
-                      color: isRevealed
-                          ? AppColors.bananiLavender
-                          : const Color(0xFFE2E8F0),
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    child: Text(
-                      'H${idx + 1}',
-                      style: TextStyle(
-                        color: isRevealed
-                            ? AppColors.bananiPrimary
-                            : const Color(0xFF64748B),
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  title: isRevealed
-                      ? Text(
-                          hints[idx],
-                          style: const TextStyle(
-                            color: Color(0xFF334155),
-                            fontSize: 11.5,
-                            height: 1.35,
-                          ),
-                        )
-                      : const Text(
-                          'Tap to reveal hint (-15 XP Penalty)',
-                          style: TextStyle(
-                            color: Color(0xFF64748B),
-                            fontSize: 11.5,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                  trailing: Icon(
-                    isRevealed
-                        ? Icons.lock_open_rounded
-                        : Icons.lock_outline_rounded,
-                    size: 15.0,
-                    color: isRevealed
-                        ? AppColors.bananiPrimary
-                        : const Color(0xFF94A3B8),
-                  ),
+                child: InkWell(
                   onTap: () {
                     HapticFeedback.selectionClick();
                     setState(() {
@@ -1243,6 +1188,65 @@ tradeoffs = {
                       }
                     });
                   },
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 9.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5.0, vertical: 2.0),
+                          decoration: BoxDecoration(
+                            color: isRevealed
+                                ? AppColors.bananiLavender
+                                : const Color(0xFFE2E8F0),
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                          child: Text(
+                            'H${idx + 1}',
+                            style: TextStyle(
+                              color: isRevealed
+                                  ? AppColors.bananiPrimary
+                                  : const Color(0xFF64748B),
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10.0),
+                        Expanded(
+                          child: isRevealed
+                              ? Text(
+                                  hints[idx],
+                                  style: const TextStyle(
+                                    color: Color(0xFF334155),
+                                    fontSize: 11.5,
+                                    height: 1.35,
+                                  ),
+                                )
+                              : const Text(
+                                  'Tap to reveal hint (-15 XP Penalty)',
+                                  style: TextStyle(
+                                    color: Color(0xFF64748B),
+                                    fontSize: 11.5,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        Icon(
+                          isRevealed
+                              ? Icons.lock_open_rounded
+                              : Icons.lock_outline_rounded,
+                          size: 15.0,
+                          color: isRevealed
+                              ? AppColors.bananiPrimary
+                              : const Color(0xFF94A3B8),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             );
@@ -1568,64 +1572,51 @@ tradeoffs = {
             },
             behavior: HitTestBehavior.opaque,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Icon(Icons.verified_outlined,
+                    size: 16.0, color: Color(0xFF059669)),
+                const SizedBox(width: 6.0),
                 const Expanded(
-                  child: Row(
-                    children: [
-                      Icon(Icons.verified_outlined,
-                          size: 16.0, color: Color(0xFF059669)),
-                      SizedBox(width: 6.0),
-                      Expanded(
-                        child: Text(
-                          'Pre-Submission Quality Gate',
-                          style: TextStyle(
-                            color: AppColors.deepInk,
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w900,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    'Pre-Submission Quality Gate',
+                    style: TextStyle(
+                      color: AppColors.deepInk,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w900,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 7.0, vertical: 2.5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECFDF5),
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: const Text(
-                            '5/5 PASSED',
-                            style: TextStyle(
-                              color: Color(0xFF059669),
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 7.0, vertical: 2.5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      child: const Text(
+                        '5/5 PASSED',
+                        style: TextStyle(
+                          color: Color(0xFF059669),
+                          fontSize: 10.0,
+                          fontWeight: FontWeight.w800,
                         ),
-                        const SizedBox(width: 4.0),
-                        Icon(
-                          _isChecklistExpanded
-                              ? Icons.keyboard_arrow_up_rounded
-                              : Icons.keyboard_arrow_down_rounded,
-                          size: 18.0,
-                          color: AppColors.textSecondary,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 4.0),
+                    Icon(
+                      _isChecklistExpanded
+                          ? Icons.keyboard_arrow_up_rounded
+                          : Icons.keyboard_arrow_down_rounded,
+                      size: 18.0,
+                      color: AppColors.textSecondary,
+                    ),
+                  ],
                 ),
               ],
             ),

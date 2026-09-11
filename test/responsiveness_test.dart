@@ -1158,7 +1158,11 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(LabPreviewView), findsOneWidget);
-        expect(tester.takeException(), isNull);
+        final err = tester.takeException();
+        if (err != null) {
+          debugPrint('LAB PREVIEW VIEWPORT ERROR AT ${size.width}x${size.height}: $err');
+        }
+        expect(err, isNull);
       });
     }
 
