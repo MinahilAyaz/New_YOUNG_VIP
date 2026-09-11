@@ -364,10 +364,13 @@ tradeoffs = {
                       borderRadius: BorderRadius.circular(14.0),
                     ),
                   ),
-                  child: const Text(
-                    'Confirm & Submit for Review',
-                    style:
-                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.w800),
+                  child: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Confirm & Submit for Review',
+                      style:
+                          TextStyle(fontSize: 14.0, fontWeight: FontWeight.w800),
+                    ),
                   ),
                 ),
               ),
@@ -460,46 +463,52 @@ tradeoffs = {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MainNavigationView(initialIndex: 0),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MainNavigationView(initialIndex: 0),
+                        ),
+                      );
+                    }
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    width: 38.0,
+                    height: 38.0,
+                    margin: const EdgeInsets.only(right: 10.0),
+                    decoration: BoxDecoration(
+                      color: AppColors.pureWhite,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: AppColors.buttonShadow,
+                      border: Border.all(
+                        color: AppColors.cardBorder,
+                        width: 1.0,
+                      ),
                     ),
-                  );
-                }
-              },
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                width: 38.0,
-                height: 38.0,
-                margin: const EdgeInsets.only(right: 10.0),
-                decoration: BoxDecoration(
-                  color: AppColors.pureWhite,
-                  borderRadius: BorderRadius.circular(12.0),
-                  boxShadow: AppColors.buttonShadow,
-                  border: Border.all(
-                    color: AppColors.cardBorder,
-                    width: 1.0,
+                    child: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: AppColors.deepInk,
+                      size: 18.0,
+                    ),
                   ),
                 ),
-                child: const Icon(
-                  Icons.arrow_back_rounded,
-                  color: AppColors.deepInk,
-                  size: 18.0,
-                ),
-              ),
+                const YoungVipWordmark(),
+              ],
             ),
-            const YoungVipWordmark(),
-          ],
+          ),
         ),
         const SizedBox(width: 8.0),
         // Staging Status Badge
@@ -573,6 +582,7 @@ tradeoffs = {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
+                flex: 7,
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: FittedBox(
@@ -609,15 +619,18 @@ tradeoffs = {
                 ),
               ),
               const SizedBox(width: 8.0),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  widget.labId,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 11.0,
-                    fontFamily: 'monospace',
-                    fontWeight: FontWeight.w700,
+              Flexible(
+                flex: 3,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    widget.labId,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11.0,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -1053,22 +1066,25 @@ tradeoffs = {
                 ),
               ),
               const SizedBox(width: 8.0),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 7.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: const Text(
-                    'Python 3.11',
-                    style: TextStyle(
-                      color: Color(0xFF2563EB),
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'monospace',
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 7.0, vertical: 2.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: const Text(
+                      'Python 3.11',
+                      style: TextStyle(
+                        color: Color(0xFF2563EB),
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'monospace',
+                      ),
                     ),
                   ),
                 ),
@@ -1133,13 +1149,16 @@ tradeoffs = {
               ),
             ),
             const SizedBox(width: 8.0),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                '${_revealedHints.length}/${hints.length} Revealed',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 11.0,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  '${_revealedHints.length}/${hints.length} Revealed',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11.0,
+                  ),
                 ),
               ),
             ),
@@ -1233,31 +1252,42 @@ tradeoffs = {
         SizedBox(
           width: double.infinity,
           height: 44.0,
-          child: ElevatedButton.icon(
+          child: ElevatedButton(
             onPressed: _isSimulatingRun ? null : _handleSimulateTestRun,
-            icon: _isSimulatingRun
-                ? const SizedBox(
-                    width: 14.0,
-                    height: 14.0,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : const Icon(Icons.play_circle_fill_rounded, size: 17.0),
-            label: Text(
-              _isSimulatingRun
-                  ? 'Simulating Student Run on A100...'
-                  : 'Simulate Run in Student Sandbox',
-              style:
-                  const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800),
-            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.bananiPrimary,
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_isSimulatingRun)
+                    const SizedBox(
+                      width: 14.0,
+                      height: 14.0,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  else
+                    const Icon(Icons.play_circle_fill_rounded, size: 17.0),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    _isSimulatingRun
+                        ? 'Simulating Student Run on A100...'
+                        : 'Simulate Run in Student Sandbox',
+                    style: const TextStyle(
+                        fontSize: 12.5, fontWeight: FontWeight.w800),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1306,21 +1336,24 @@ tradeoffs = {
                     ),
                     if (_simulationPassed) ...[
                       const SizedBox(width: 8.0),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6.0, vertical: 2.0),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF059669),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          child: const Text(
-                            'STAGE PASSED',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 9.0,
-                              fontWeight: FontWeight.w800,
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0, vertical: 2.0),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF059669),
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: const Text(
+                              'STAGE PASSED',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 9.0,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
                         ),
@@ -1372,22 +1405,25 @@ tradeoffs = {
               ),
             ),
             const SizedBox(width: 8.0),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 7.0, vertical: 2.0),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                child: const Text(
-                  'CONFIDENTIAL EVAL',
-                  style: TextStyle(
-                    color: Color(0xFFD97706),
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerRight,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7.0, vertical: 2.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFEF3C7),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: const Text(
+                    'CONFIDENTIAL EVAL',
+                    style: TextStyle(
+                      color: Color(0xFFD97706),
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),
@@ -1546,36 +1582,39 @@ tradeoffs = {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7.0, vertical: 2.5),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFECFDF5),
-                          borderRadius: BorderRadius.circular(6.0),
-                        ),
-                        child: const Text(
-                          '5/5 PASSED',
-                          style: TextStyle(
-                            color: Color(0xFF059669),
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w800,
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7.0, vertical: 2.5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECFDF5),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          child: const Text(
+                            '5/5 PASSED',
+                            style: TextStyle(
+                              color: Color(0xFF059669),
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 4.0),
-                      Icon(
-                        _isChecklistExpanded
-                            ? Icons.keyboard_arrow_up_rounded
-                            : Icons.keyboard_arrow_down_rounded,
-                        size: 18.0,
-                        color: AppColors.textSecondary,
-                      ),
-                    ],
+                        const SizedBox(width: 4.0),
+                        Icon(
+                          _isChecklistExpanded
+                              ? Icons.keyboard_arrow_up_rounded
+                              : Icons.keyboard_arrow_down_rounded,
+                          size: 18.0,
+                          color: AppColors.textSecondary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -1679,7 +1718,7 @@ tradeoffs = {
         SizedBox(
           width: double.infinity,
           height: 46.0,
-          child: OutlinedButton.icon(
+          child: OutlinedButton(
             onPressed: () {
               HapticFeedback.lightImpact();
               if (Navigator.canPop(context)) {
@@ -1691,16 +1730,26 @@ tradeoffs = {
                 );
               }
             },
-            icon: const Icon(Icons.edit_note_rounded, size: 16.0),
-            label: const Text(
-              'Edit Content in Lab Builder',
-              style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w800),
-            ),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.deepInk,
               side: const BorderSide(color: Color(0xFFCBD5E1), width: 1.2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14.0),
+              ),
+            ),
+            child: const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.edit_note_rounded, size: 16.0),
+                  SizedBox(width: 8.0),
+                  Text(
+                    'Edit Content in Lab Builder',
+                    style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w800),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1710,16 +1759,26 @@ tradeoffs = {
         // Tertiary: Share Staging Link
         SizedBox(
           width: double.infinity,
-          child: TextButton.icon(
+          child: TextButton(
             onPressed: _handleSharePreviewLink,
-            icon: const Icon(Icons.share_outlined,
-                size: 14.0, color: AppColors.textSecondary),
-            label: const Text(
-              'Share Staging Preview Link',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w700,
+            child: const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.share_outlined,
+                      size: 14.0, color: AppColors.textSecondary),
+                  SizedBox(width: 6.0),
+                  Text(
+                    'Share Staging Preview Link',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
