@@ -248,148 +248,150 @@ tradeoffs = {
             top: 20.0,
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 28.0,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 44.0,
-                  height: 4.5,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFCBD5E1),
-                    borderRadius: BorderRadius.circular(3.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18.0),
-              Row(
-                children: [
-                  Container(
-                    width: 46.0,
-                    height: 46.0,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 44.0,
+                    height: 4.5,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECFDF5),
-                      borderRadius: BorderRadius.circular(14.0),
-                      border: Border.all(
-                          color: const Color(0xFFA7F3D0), width: 1.0),
-                    ),
-                    child: const Icon(
-                      Icons.verified_rounded,
-                      color: Color(0xFF059669),
-                      size: 24.0,
+                      color: const Color(0xFFCBD5E1),
+                      borderRadius: BorderRadius.circular(3.0),
                     ),
                   ),
-                  const SizedBox(width: 12.0),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Submit Lab for Governance',
-                          style: TextStyle(
-                            color: AppColors.deepInk,
-                            fontSize: 16.5,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                        Text(
-                          'Dispatch to Senior Peer Reviewers & Governance Board',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 11.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18.0),
-              Container(
-                padding: const EdgeInsets.all(14.0),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(14.0),
-                  border:
-                      Border.all(color: const Color(0xFFE2E8F0), width: 1.0),
                 ),
-                child: const Column(
+                const SizedBox(height: 18.0),
+                Row(
                   children: [
-                    _SubmissionInfoRow(
-                      label: 'Assigned Reviewers',
-                      value: 'Dr. Thorne & E. Rostova',
+                    Container(
+                      width: 46.0,
+                      height: 46.0,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(14.0),
+                        border: Border.all(
+                            color: const Color(0xFFA7F3D0), width: 1.0),
+                      ),
+                      child: const Icon(
+                        Icons.verified_rounded,
+                        color: Color(0xFF059669),
+                        size: 24.0,
+                      ),
                     ),
-                    SizedBox(height: 8.0),
-                    _SubmissionInfoRow(
-                      label: 'Review Turnaround SLA',
-                      value: '24 - 48 Business Hours',
-                    ),
-                    SizedBox(height: 8.0),
-                    _SubmissionInfoRow(
-                      label: 'Catalog Revenue Tier',
-                      value: '70% Author Royalties (Escrow)',
-                    ),
-                    SizedBox(height: 8.0),
-                    _SubmissionInfoRow(
-                      label: 'Compute Allocation',
-                      value: 'Dual NVIDIA A100 (80GB VRAM)',
+                    const SizedBox(width: 12.0),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Submit Lab for Governance',
+                            style: TextStyle(
+                              color: AppColors.deepInk,
+                              fontSize: 16.5,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          Text(
+                            'Dispatch to Senior Peer Reviewers & Governance Board',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 11.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              SizedBox(
-                width: double.infinity,
-                height: 50.0,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    setState(() => _isSubmitted = true);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Lab submitted for review! Reviewers notified via priority dispatch.'),
-                        backgroundColor: Color(0xFF059669),
-                        duration: Duration(seconds: 4),
+                const SizedBox(height: 18.0),
+                Container(
+                  padding: const EdgeInsets.all(14.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(14.0),
+                    border:
+                        Border.all(color: const Color(0xFFE2E8F0), width: 1.0),
+                  ),
+                  child: const Column(
+                    children: [
+                      _SubmissionInfoRow(
+                        label: 'Assigned Reviewers',
+                        value: 'Dr. Thorne & E. Rostova',
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF059669),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                    ),
+                      SizedBox(height: 8.0),
+                      _SubmissionInfoRow(
+                        label: 'Review Turnaround SLA',
+                        value: '24 - 48 Business Hours',
+                      ),
+                      SizedBox(height: 8.0),
+                      _SubmissionInfoRow(
+                        label: 'Catalog Revenue Tier',
+                        value: '70% Author Royalties (Escrow)',
+                      ),
+                      SizedBox(height: 8.0),
+                      _SubmissionInfoRow(
+                        label: 'Compute Allocation',
+                        value: 'Dual NVIDIA A100 (80GB VRAM)',
+                      ),
+                    ],
                   ),
-                  child: const FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      'Confirm & Submit for Review',
-                      style:
-                          TextStyle(fontSize: 14.0, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 20.0),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50.0,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      setState(() => _isSubmitted = true);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Lab submitted for review! Reviewers notified via priority dispatch.'),
+                          backgroundColor: Color(0xFF059669),
+                          duration: Duration(seconds: 4),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF059669),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
+                    ),
+                    child: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Confirm & Submit for Review',
+                        style:
+                            TextStyle(fontSize: 14.0, fontWeight: FontWeight.w800),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text(
-                    'Cancel & Continue Editing',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
+                const SizedBox(height: 10.0),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text(
+                      'Cancel & Continue Editing',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -582,7 +584,6 @@ tradeoffs = {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                flex: 7,
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: FittedBox(
@@ -619,18 +620,15 @@ tradeoffs = {
                 ),
               ),
               const SizedBox(width: 8.0),
-              Flexible(
-                flex: 3,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    widget.labId,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11.0,
-                      fontWeight: FontWeight.w700,
-                    ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  widget.labId,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11.0,
+                    fontFamily: 'monospace',
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -1100,13 +1098,17 @@ tradeoffs = {
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(color: const Color(0xFF1E293B)),
             ),
-            child: SelectableText(
-              stage['sampleCode'] as String,
-              style: const TextStyle(
-                color: Color(0xFF38BDF8),
-                fontSize: 11.5,
-                fontFamily: 'monospace',
-                height: 1.45,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Text(
+                stage['sampleCode'] as String,
+                style: const TextStyle(
+                  color: Color(0xFF38BDF8),
+                  fontSize: 11.5,
+                  fontFamily: 'monospace',
+                  height: 1.45,
+                ),
               ),
             ),
           ),
@@ -1362,15 +1364,19 @@ tradeoffs = {
                   ],
                 ),
                 const Divider(color: Color(0xFF1E293B), height: 16.0),
-                Text(
-                  _simulationLog,
-                  style: TextStyle(
-                    color: _simulationPassed
-                        ? const Color(0xFF4ADE80)
-                        : const Color(0xFF94A3B8),
-                    fontSize: 11.0,
-                    fontFamily: 'monospace',
-                    height: 1.45,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: Text(
+                    _simulationLog,
+                    style: TextStyle(
+                      color: _simulationPassed
+                          ? const Color(0xFF4ADE80)
+                          : const Color(0xFF94A3B8),
+                      fontSize: 11.0,
+                      fontFamily: 'monospace',
+                      height: 1.45,
+                    ),
                   ),
                 ),
               ],
@@ -1439,13 +1445,17 @@ tradeoffs = {
             borderRadius: BorderRadius.circular(12.0),
             border: Border.all(color: const Color(0xFF313244)),
           ),
-          child: SelectableText(
-            stage['assertions'] as String,
-            style: const TextStyle(
-              color: Color(0xFFA6E3A1),
-              fontSize: 11.5,
-              fontFamily: 'monospace',
-              height: 1.45,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Text(
+              stage['assertions'] as String,
+              style: const TextStyle(
+                color: Color(0xFFA6E3A1),
+                fontSize: 11.5,
+                fontFamily: 'monospace',
+                height: 1.45,
+              ),
             ),
           ),
         ),
@@ -1566,7 +1576,7 @@ tradeoffs = {
                       Icon(Icons.verified_outlined,
                           size: 16.0, color: Color(0xFF059669)),
                       SizedBox(width: 6.0),
-                      Flexible(
+                      Expanded(
                         child: Text(
                           'Pre-Submission Quality Gate',
                           style: TextStyle(
